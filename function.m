@@ -3,7 +3,7 @@ clc, clearvars, clear all
 inFile = "R20_sorted.csv";
 data = readtable(inFile);
 
-data = data(round(data.TirePressure) == 12 & round(data.InclinationAngle) == 0, :);
+data = data(round(data.TirePressure) == 12 & round(data.InclinationAngle) == 0 & abs(round(data.NormalForce / 50) * 50) == 250, :);
 
 pressure = data.TirePressure;
 FZ = data.NormalForce;
@@ -25,9 +25,9 @@ disp(pacejkaFit);
 FYPredicted = pacejka(pacejkaFit, L, FZ, IA, alpha);
 
 figure;
-scatter(alpha, FYMeasured, 'k.');
+scatter(alpha, FYMeasured);
 hold on;
-scatter(alpha, FYPredicted, 'r.');
+%scatter(alpha, FYPredicted, 'r.');
 xlabel("Slip Angle (deg)");
 ylabel("Lateral Force (N)");
 legend('Measured', 'Pacejka Fit');

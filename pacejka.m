@@ -3,7 +3,7 @@ function FY = pacejka(P, L, FZ, IA, alpha);
     % inputs 19 P coefficients,
     % Estimated coefficients are as follows:
     % P = [250, 1.4, 2.4, -0.25, 3, -0.1, -1.5, 0, 0, -30.5, 1.15, 1, 0, 0, -0.128, 0, 0, 0, 1.43];
-    % L = [1, 1, 1, 1, 1, 1, 1, 1];
+    % L = [0.62, 1, 1, 1, 1, 1, 1, 1];
 
     dfz = (FZ - P(1)) / P(1);
     Svy = FZ .* (P(16) + P(17) * dfz + (P(18) + P(19) * dfz) .* IA) * L(8) * L(5);
