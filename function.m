@@ -3,6 +3,8 @@ clc, clearvars, clear all
 inFile = "R20_sorted.csv";
 data = readtable(inFile);
 
+data = data(round(data.TirePressure) == 12 & round(data.InclinationAngle) == 0, :);
+
 pressure = data.TirePressure;
 FZ = data.NormalForce;
 IA = data.InclinationAngle;
