@@ -1,6 +1,6 @@
 clc, clearvars, clear all
 
-inFile = "R20_ordered_tire_pressure_and_speed.csv";
+inFile = "R20_sorted.csv";
 data = readtable(inFile);
 
 pressure = data.TirePressure;
