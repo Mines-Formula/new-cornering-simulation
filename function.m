@@ -9,12 +9,6 @@ IA = data.InclinationAngle;
 alpha = data.SlipAngle;
 FYMeasured = data.LateralForce;
 
-valid = FZ > 50 & abs(alpha) < 20;
-FZ = FZ(valid);
-IA = IA(valid);
-alpha = alpha(valid);
-FYMeasured = FYMeasured(valid);
-
 P0 = [250, 1.4, 2.4, -0.25, 3, -0.1, -1.5, 0, 0, -30.5, 1.15, 1, 0, 0, -0.128, 0, 0, 0, 1.43];
 L = ones(1, 8);
 
