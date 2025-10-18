@@ -53,6 +53,7 @@ end
 rows = height(Table);
 finalTable = table();
 for i = 1:rows
+    finalTable.RoadSpeed(i) = table2array(Table(i, "RoadSpeed"));
     tp = table2array(Table(i, "TirePressure"));
     tp = tp - mod(tp, 1);
     finalTable.TirePressure(i) = tp;
@@ -64,7 +65,7 @@ for i = 1:rows
 end
 
 
-finalTable = genericSort(finalTable, ["TirePressure", "InclinationAngle"]);
+finalTable = genericSort(finalTable, ["RoadSpeed", "TirePressure", "InclinationAngle"]);
 dataFolder = 'C:\Users\ajsau\Documents\formula\corneringSim\cornering-simulation';
 outFile = fullfile(dataFolder, "LCO_infoTable.csv");
 writetable(finalTable, outFile);
