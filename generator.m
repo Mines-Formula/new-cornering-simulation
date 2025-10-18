@@ -53,7 +53,9 @@ end
 rows = height(Table);
 finalTable = table();
 for i = 1:rows
-    finalTable.RoadSpeed(i) = table2array(Table(i, "RoadSpeed"));
+    v = table2array(Table(i, "RoadSpeed"));
+    v = round(v);
+    finalTable.RoadSpeed(i) = v;
     tp = table2array(Table(i, "TirePressure"));
     tp = tp - mod(tp, 1);
     finalTable.TirePressure(i) = tp;
