@@ -1,0 +1,17 @@
+clc, clearvars, clear all\
+
+dataFolder = 'C:\Users\ajsau\Documents\formula\corneringSim\cornering-simulation';
+inFile  = fullfile(dataFolder, "LCO.csv");
+
+T = readtable(inFile)
+
+x = T{:,"ElapsedTime"}
+tp = T{:,"TirePressure"}
+ia = T{:,"InclinationAngle"}
+sa = T{:, "SlipAngle"}
+fz = T{:, "NominalLoa"}
+
+scatter(x, tp, "yellow")
+hold on
+scatter(x, ia, "magenta")
+hold off
