@@ -35,7 +35,7 @@ for i = 1:numel(fileList)
 
     rows = height(runTable);
     for j= 1:rows
-        index = fileList(i).name + "_"+ j;
+        index = fileList(i).name + "_Line"+ j;
         runTable.Index(j) = index;
     end
 
