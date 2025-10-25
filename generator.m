@@ -52,6 +52,20 @@ disp("Finished OG Table");
 
 filteredTable = finalTable(finalTable.InclinationAngle == 0 & finalTable.RoadSpeed == 25 & finalTable.TirePressure == 12, :);
 
+filteredTable = sortrows(filteredTable, 'ElapsedTime');
+
+[uniqueTimes, ia, ic] = unique(filteredTable.ElapsedTime, 'stable');
+
+duplicateIdx = setdiff(1:height(filteredTable), ia); % indices of duplicates
+
+if ~isempty(duplicateIdx)
+    [~, maxIdx] = grpstats(filteredTable.SlipAngle, filteredTable.ElapsedTime, {'max', 'gname'});
+    maxIdx = double(maxIdx);
+    filteredTable = filteredTable(maxIdx, :);
+end
+
+filteredTable = sortrows(filteredTable, "ElapsedTime");
+
 outFilteredFile = fullfile('/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation', "R20_filtered_table.csv");
 writetable(filteredTable, outFilteredFile);
 
@@ -62,9 +76,9 @@ t = filteredTable.ElapsedTime;
 NF = filteredTable.NormalForce;
 SA = filteredTable.SlipAngle;
 
-scatter(t, NF, 1, 'b', 'filled'); % Normal Force (blue)
+plot(t, NF, 'b-', 'LineWidth', 1.5); % Normal Force (blue line)
 hold on;
-scatter(t, SA, 1, 'r', 'filled'); % Slip Angle (red)
+plot(t, SA, 'r-', 'LineWidth', 1.5); % Slip Angle (red line)
 hold off;
 
 grid on;
