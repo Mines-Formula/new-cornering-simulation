@@ -56,4 +56,4 @@ c.TickLabels = string(uniqueBins);
 c.Label.String = 'Normal Force (N, binned to nearest 50)';
 
 rmse = sqrt(mean((FY_calc - FY_exp).^2));
-disp(['RMSE between experimental and calculated FY: ', num2str(rmse, '%.3f'), ' N']);
+disp(['RMSE between experimental and calculated FY: ', num2str(rmse, '%.3f')]);
