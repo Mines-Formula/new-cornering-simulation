@@ -59,17 +59,16 @@ disp("FilteredTableSaved");
 
 figure;
 t = filteredTable.ElapsedTime;
+NF = filteredTable.NormalForce;
+SA = filteredTable.SlipAngle;
 
-varsToPlot = ["NormalForce", "SlipAngle"];
+scatter(t, NF, 1, 'b', 'filled'); % Normal Force (blue)
+hold on;
+scatter(t, SA, 1, 'r', 'filled'); % Slip Angle (red)
+hold off;
 
-numVars = numel(varsToPlot);
-
-for i = 1:numVars
-    subplot(numVars, 1, i);
-    plot(t, filteredTable.(varsToPlot(i)), 'LineWidth', 1.5);
-    grid on;
-    xlabel('Elapsed Time (s)');
-    ylabel(varsToPlot(i), 'Interpreter', 'none');
-    title(varsToPlot(i) + " vs Time");
-end
-
+grid on;
+xlabel('Elapsed Time (s)');
+ylabel('Value');
+title('Normal Force and Slip Angle vs Time');
+legend('Normal Force (N)', 'Slip Angle (deg)', 'Location', 'best');
