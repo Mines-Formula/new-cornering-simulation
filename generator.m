@@ -63,6 +63,7 @@ for i = 1:rows
     ia = ia - mod(ia, 0.1);
     finalTable.InclinationAngle(i) = ia;
     finalTable.NormalForce(i) = table2array(Table(i, "NormalForce"));
+    finalTable.SlipAngle(i) = table2array(Table(i, "SlipAngle"));
     finalTable.Index(i) = table2array(Table(i, "Index"));
 end
 
