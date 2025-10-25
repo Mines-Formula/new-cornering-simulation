@@ -2,7 +2,7 @@ clc, clearvars, clear all
 
 path = '/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation';
 allDataPath = fullfile(path, 'R20_filtered_table.csv');
-extraDataPath = fullfile(path, 'R20_infoTable.csv');
+extraDataPath = fullfile(path, 'R20_allData.csv');
 rangeDataPath = fullfile(path, 'R20_ranges.csv');
 
 allData = readtable(allDataPath);
@@ -19,9 +19,11 @@ for i = 1:size(timeRanges, 1)
 end
 
 filteredAll = allData(mask, :);
+filteredMoreAll = extraData(mask, :);
 disp("Finished Masking");
 
 filteredAll = sortrows(filteredAll, "ElapsedTime");
+filtereMoreAll = sortrows(filteredMoreAll, "ElapsedTime");
 
 figure('Position', [200 200 900 600]);
 
@@ -47,6 +49,8 @@ xlabel('Elapsed Time (s)');
 ylabel('Tire Pressure (PSI)');
 title('Tire Pressure vs. Time');
 grid on;
+
+
 
 
 sgtitle('Parameter Behavior in Selected Ranges (R20 Test)');

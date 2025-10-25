@@ -45,6 +45,11 @@ finalTable.InclinationAngle = floor(finalTable.InclinationAngle * 10) / 10;
 
 
 finalTable = sortrows(finalTable, ["RoadSpeed", "TirePressure", "InclinationAngle"]);
+
+outAllFile = fullfile('/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation', "R20_allData.csv");
+writetable(finalTable, outAllFile);
+disp("Saved full unfiltered dataset: R20_allData.csv");
+
 outFile = fullfile('/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation', "R20_infoTable.csv");
 writetable(finalTable, outFile);
 
