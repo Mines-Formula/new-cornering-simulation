@@ -5,7 +5,7 @@ fileList = dir(fullfile(dataFolder, "*.mat"));
 
 Table = table();
 
-targetTire = 'Hoosier 43075 16x7.5-10 LCO, 7 inch rim';
+targetTire = 'Hoosier 43070 16x6.0-10 R20, 6 inch rim';
 for i = 1:numel(fileList)
     filePath = fullfile(fileList(i).folder, fileList(i).name);
     curFile = load(filePath);
