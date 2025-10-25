@@ -64,6 +64,7 @@ for i = 1:rows
     finalTable.InclinationAngle(i) = ia;
     finalTable.NormalForce(i) = table2array(Table(i, "NormalForce"));
     finalTable.SlipAngle(i) = table2array(Table(i, "SlipAngle"));
+    finalTable.CorneringForceMeasured(i) = table2array(Table(i, "LateralForce"));
     finalTable.Index(i) = table2array(Table(i, "Index"));
 end
 
