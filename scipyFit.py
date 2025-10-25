@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 
 #using coefficients to calculate cornering force
-def pacejka(P, L, FZ, IA, alpha):
+def pacejka(P_noCamber, P_camber, L, FZ, IA, alpha):
     #alpha is slip angle
     #P = [250, 1.4, 2.4, -0.25, 3, -0.1, -1.5, 0, 0, -30.5, 1.15, 1, 0, 0, -0.128, 0, 0, 0, 1.43];
     #L = [1, 1, 1, 1, 1, 1, 1, 1];
@@ -23,8 +23,36 @@ def pacejka(P, L, FZ, IA, alpha):
     return FY
 
 #make them as close to each other as possible
-def diff(P, L, FZ, IA, alpha, Ty_measured):
-    return pacejka(P, L, FZ, IA, alpha) - Ty_measured
+def diff_noCamber(P_noCamber, P_camber, L, FZ, IA, alpha, Fy_measured):
+    return pacejka(P_noCamber, P_camber, L, FZ, IA, alpha) - Fy_measured
+
+def diff_camber(P_camber, P_noCamber, L, FZ, IA, alpha, Fy_measured):
+    return pacejka(P_noCamber, P_camber, L, FZ, IA, alpha) - Fy_measured
+
+def edit_P_with_no_Camber(P, P_noCamber):
+    P[0] = P_noCamber[0]
+    P[1] = P_noCamber[1]
+    P[2] = P_noCamber[2]
+    P[3] = P_noCamber[3]
+    P[5] = P_noCamber[4]
+    P[6] = P_noCamber[5]
+    P[7] = P_noCamber[6]
+    P[8] = P_noCamber[7]
+    P[9] = P_noCamber[8]
+    P[10] = P_noCamber[9]
+    P[12] = P_noCamber[10]
+    P[15] = P_noCamber[11]
+    return P
+
+def edit_P_with_camber(P, P_camber):
+    P[4] = P_camber[0]
+    P[11] = P_camber[1]
+    P[13] = P_camber[2]
+    P[14] = P_camber[3]
+    P[16] = P_camber[4]
+    P[17] = P_camber[5]
+    P[18] = P_camber[6]
+    return P
 
 #load the data
 df = pd.read_csv("C:/Users/ajsau/Documents/formula/corneringSim/cornering-simulation/LCO_infoTable.csv")
@@ -37,6 +65,16 @@ IA = df["InclinationAngle"]
 alpha = df["SlipAngle"]
 FY_measured = df["CorneringForceMeasured"]
 
-result = least_squares(diff, P, args=(L, FZ, IA, alpha, FY_measured))
+#estimate the noCamber things first
+result_noCamber_init = least_squares(diff_noCamber, P_noCamber, args=(P_camber, L, FZ, IA, alpha, FY_measured))
+#now change the coefficient - this result is the changed P_nocamber values
+P_noCamber = result_noCamber_init.x
+P = edit_P_with_no_Camber(P, P_noCamber)
+print(f"Updated coefficients after optimization based on the values with no camber: {P}")
 
-print(result.x)
+#estimate the camber things 
+result_camber_init = least_squares(diff_camber, P_camber, args=(P_noCamber, L, FZ, IA, alpha, FY_measured))
+#change the coefficient array
+P_camber = result_camber_init.x
+P = edit_P_with_camber(P, P_camber)
+print(f"Updated coefficients after optimization based on the values with camber: {P}")
