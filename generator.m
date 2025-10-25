@@ -68,7 +68,7 @@ end
 
 
 finalTable = genericSort(finalTable, ["RoadSpeed", "TirePressure", "InclinationAngle"]);
-dataFolder = 'C:\Users\ajsau\Documents\formula\corneringSim\cornering-simulation';
-outFile = fullfile(dataFolder, "LCO_infoTable.csv");
+dataFolder = '/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation';
+outFile = fullfile(dataFolder, "R20_infoTable.csv");
 writetable(finalTable, outFile);
 disp("Finished");
