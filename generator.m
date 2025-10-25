@@ -31,16 +31,14 @@ for i = 1:numel(fileList)
     allTables{i} = runTable;
 end
 
-% Combine all runs once
 Table = vertcat(allTables{:});
 
-% Vectorized cleanup
 finalTable = Table(:, ["RoadSpeed", "TirePressure", "InclinationAngle", "NormalForce", "SlipAngle", "Index"]);
 finalTable.RoadSpeed = round(finalTable.RoadSpeed);
 finalTable.TirePressure = floor(finalTable.TirePressure);
 finalTable.InclinationAngle = floor(finalTable.InclinationAngle * 10) / 10;
 
-% Sort and save
+
 finalTable = sortrows(finalTable, ["RoadSpeed", "TirePressure", "InclinationAngle"]);
 outFile = fullfile('/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation', "R20_infoTable.csv");
 writetable(finalTable, outFile);

@@ -14,6 +14,6 @@ FY = pacejka(P, L, FZ, IA, alpha);
 
 data.FYPacejka = FY;
 
-outFile = fullfile('/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation', 'R20_with_Pacejka.csv');
-writetable(resultTable, outFile);
+outFile = fullfile('/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation', 'R20_with_FY.csv');
+writetable(data, outFile);
 disp("Finished");
