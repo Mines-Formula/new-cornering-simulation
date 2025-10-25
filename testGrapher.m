@@ -16,3 +16,6 @@ for i = 1:size(timeRanges, 1)
     mask = mask | (allData.ElapsedTime >= timeRanges(i, 1) & allData.ElapsedTime <= timeRanges(i, 2));
 end
 
+filtereAll = allData(mask, :);
+disp("Finished Masking");
+
