@@ -1,6 +1,6 @@
 clc, clearvars, clear all
 
-dataFolder = 'C:\Users\ajsau\Downloads\RunData_Cornering_Matlab_USCS_10inch_Round8';
+dataFolder = '/Users/Blanchards1/Documents/Round9';
 fileList = dir(fullfile(dataFolder, "*.mat"));
 
 Table = table();
