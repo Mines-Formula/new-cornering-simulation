@@ -1,4 +1,4 @@
-clc, clearvars, clear all\
+clc, clearvars, clear all
 
 dataFolder = 'C:\Users\ajsau\Documents\formula\corneringSim\cornering-simulation';
 inFile  = fullfile(dataFolder, "LCO.csv");
