@@ -1,7 +1,7 @@
 clc, clearvars, clear all\
 
-dataFolder = 'C:\Users\ajsau\Documents\formula\corneringSim\cornering-simulation';
-inFile  = fullfile(dataFolder, "R20.csv");
+dataFolder = '/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation';
+inFile  = fullfile(dataFolder, "R20_infoTable.csv");
 
 T = readtable(inFile)
 
