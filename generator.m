@@ -6,7 +6,11 @@ fileList = dir(fullfile(dataFolder, "*.mat"));
 finalTable = table();
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 targetTire = 'Hoosier 43070 16x6.0-10 R20, 7 inch rim'; % Change to 7 inch rim
+=======
+targetTire = 'Hoosier 43075 16x7.5-10 R20, 7 inch rim'; % Change to 7 inch rim
+>>>>>>> Stashed changes
 =======
 targetTire = 'Hoosier 43075 16x7.5-10 R20, 7 inch rim'; % Change to 7 inch rim
 >>>>>>> Stashed changes
