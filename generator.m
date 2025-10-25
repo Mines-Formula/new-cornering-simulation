@@ -56,3 +56,20 @@ outFilteredFile = fullfile('/Users/Blanchards1/Documents/FormulaSim/new-cornerin
 writetable(filteredTable, outFilteredFile);
 
 disp("FilteredTableSaved");
+
+figure;
+t = filteredTable.ElapsedTime;
+
+varsToPlot = ["NormalForce", "SlipAngle"];
+
+numVars = numel(varsToPlot);
+
+for i = 1:numVars
+    subplot(numVars, 1, i);
+    plot(t, filteredTable.(varsToPlot(i)), 'LineWidth', 1.5);
+    grid on;
+    xlabel('Elapsed Time (s)');
+    ylabel(varsToPlot(i), 'Interpreter', 'none');
+    title(varsToPlot(i) + " vs Time");
+end
+
