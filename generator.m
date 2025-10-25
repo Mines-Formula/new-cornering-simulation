@@ -5,21 +5,12 @@ fileList = dir(fullfile(dataFolder, "*.mat"));
 
 finalTable = table();
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 targetTire = 'Hoosier 43070 16x6.0-10 R20, 7 inch rim'; % Change to 7 inch rim
-=======
-targetTire = 'Hoosier 43075 16x7.5-10 R20, 7 inch rim'; % Change to 7 inch rim
->>>>>>> Stashed changes
-=======
-targetTire = 'Hoosier 43075 16x7.5-10 R20, 7 inch rim'; % Change to 7 inch rim
->>>>>>> Stashed changes
 
 for i = 1:numel(fileList)
     filePath = fullfile(fileList(i).folder, fileList(i).name);
     curFile = load(filePath);
 
-    % --- Safety checks ---
     if ~isfield(curFile, 'tireid') || ~isfield(curFile, 'testid')
         fprintf("Skipping %s (missing tireid or testid)\n", fileList(i).name);
         continue
@@ -30,24 +21,14 @@ for i = 1:numel(fileList)
         continue
     end
 
-    % --- Check that all required fields exist ---
-    requiredFields = {'FZ', 'IA', 'P'};
-    if ~all(isfield(curFile, requiredFields))
-        fprintf("Skipping %s (missing one of required fields: FZ, IA, P)\n", fileList(i).name);
-        continue
-    end
-
-    % --- Ensure column vectors ---
     FZ = abs(curFile.FZ(:));
     IA = curFile.IA(:);
     P  = curFile.P(:);
 
-    % --- Get testid as a string for this file ---
     testid = string(curFile.testid);
     testidCol = repmat(testid, numel(FZ), 1);
     tireidCol = repmat(string(curFile.tireid), numel(FZ), 1);
 
-    % --- Now safely create the table ---
     runTable = table(FZ, IA, P, testidCol, tireidCol, ...
         'VariableNames', {'NormalForce', 'InclinationAngle', 'TirePressure', 'testid', 'tireid'});
 
