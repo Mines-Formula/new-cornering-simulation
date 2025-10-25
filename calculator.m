@@ -3,6 +3,8 @@ clc, clearvars, clear all
 dataPath = '/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation/R20_ranges.csv';
 data = readtable(dataPath);
 
+data = data(data.SlipAngle < -0.2 | data.SlipAngle > 0.2, :);
+
 FZ = data.NormalForce;
 IA = data.InclinationAngle;
 alpha = data.SlipAngle;
@@ -19,7 +21,7 @@ outFile = fullfile('/Users/Blanchards1/Documents/FormulaSim/new-cornering-simula
 writetable(data, outFile);
 disp("Finished");
 
-
+FZ_binned = round(FZ / 50) * 50;
 
 % Graph comparison of the two
 
@@ -29,9 +31,9 @@ FY_calc_sorted = FY(idx);
 
 
 figure;
-scatter(alphaSorted, FY_exp_sorted, 20, 'r', 'filled', 'DisplayName', 'Experimental FY');
+scatter(alphaSorted, FY_exp_sorted, 10, 'r', 'filled', 'DisplayName', 'Experimental FY');
 hold on;
-scatter(alphaSorted, FY_calc_sorted, 20, 'b', 'filled', 'DisplayName', 'Calculated FY (Pacejka)');
+scatter(alphaSorted, FY_calc_sorted, 10, 'b', 'filled', 'DisplayName', 'Calculated FY (Pacejka)');
 hold off;
 
 grid on;
@@ -40,6 +42,5 @@ ylabel('Lateral Force FY (N)');
 title('Experimental vs. Calculated Lateral Force (Pacejka Model)');
 legend('Location', 'best');
 
-% --- RMSE (Error Metric) ---
-rmse = sqrt(mean((FY_calc - FY_exp).^2));
+rmse = sqrt(mean((FY - FY_exp).^2));
 disp(['RMSE between experimental and calculated FY: ', num2str(rmse, '%.3f'), ' N']);
