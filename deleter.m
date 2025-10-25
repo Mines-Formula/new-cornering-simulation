@@ -14,6 +14,7 @@ trimmedTable = filteredTable(mask, :);
 
 roundedNormalForce = round(trimmedTable.NormalForce / 50) * 50;
 maskNonZero = roundedNormalForce ~= 0;
+trimmedTable = trimmedTable(maskNonZero, :);
 
 
 outFile = '/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation/R20_ranges.csv';
