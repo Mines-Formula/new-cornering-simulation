@@ -1,6 +1,6 @@
 clc, clearvars, clear all
 
-dataFolder = '/Users/Blanchards1/Documents/Round9';
+dataFolder = '/Users/Blanchards1/Documents/R20Data2';
 fileList = dir(fullfile(dataFolder, "*.mat"));
 targetTire = 'Hoosier 43070 16x6.0-10 R20, 7 inch rim';
 
@@ -11,8 +11,13 @@ for i = 1:numel(fileList)
     curFile = load(filePath);
 
     if ~strcmp(curFile.tireid, targetTire)
+        disp(fileList(i).name);
+        disp("skipped");
         continue
     end
+
+    disp(fileList(i).name);
+    disp("Chosen");
 
     runTable = table(curFile.AMBTMP, curFile.ET, curFile.FX, curFile.FY, curFile.FZ, curFile.IA, curFile.MX, curFile.MZ, ...
         curFile.N, curFile.NFX, curFile.NFY, curFile.P, curFile.RE, curFile.RL, curFile.RST, ...
@@ -33,7 +38,7 @@ end
 
 Table = vertcat(allTables{:});
 
-finalTable = Table(:, ["RoadSpeed", "TirePressure", "InclinationAngle", "NormalForce", "SlipAngle", "Index"]);
+finalTable = Table(:, ["RoadSpeed", "TirePressure", "InclinationAngle", "NormalForce", "SlipAngle", "ElapsedTime", "Index"]);
 finalTable.RoadSpeed = round(finalTable.RoadSpeed);
 finalTable.TirePressure = floor(finalTable.TirePressure);
 finalTable.InclinationAngle = floor(finalTable.InclinationAngle * 10) / 10;
@@ -43,4 +48,11 @@ finalTable = sortrows(finalTable, ["RoadSpeed", "TirePressure", "InclinationAngl
 outFile = fullfile('/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation', "R20_infoTable.csv");
 writetable(finalTable, outFile);
 
-disp("Finished");
+disp("Finished OG Table");
+
+filteredTable = finalTable(finalTable.InclinationAngle == 0 & finalTable.RoadSpeed == 25 & finalTable.TirePressure == 12, :);
+
+outFilteredFile = fullfile('/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation', "R20_filtered_table.csv");
+writetable(filteredTable, outFilteredFile);
+
+disp("FilteredTableSaved");
