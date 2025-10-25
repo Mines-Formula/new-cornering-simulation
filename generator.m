@@ -52,20 +52,13 @@ disp("Finished OG Table");
 
 filteredTable = finalTable(finalTable.InclinationAngle == 0 & finalTable.RoadSpeed == 25 & finalTable.TirePressure == 12, :);
 
-filteredTable = sortrows(filteredTable, 'ElapsedTime');
-
-[uniqueTimes, ia, ic] = unique(filteredTable.ElapsedTime, 'stable');
-
-duplicateIdx = setdiff(1:height(filteredTable), ia); % indices of duplicates
-
-if ~isempty(duplicateIdx)
-    [~, maxIdx] = grpstats(filteredTable.SlipAngle, filteredTable.ElapsedTime, {'max', 'gname'});
-    maxIdx = double(maxIdx);
-    filteredTable = filteredTable(maxIdx, :);
-end
-
 filteredTable = sortrows(filteredTable, "ElapsedTime");
 
+[~, idx] = sortrows([filteredTable.ElapsedTime, -filteredTable.SlipAngle]); % sort by time asc, slip desc
+[~, ia] = unique(filteredTable.ElapsedTime, 'stable'); % keep first occurrence (max slip)
+filteredTable = filteredTable(sort(ia), :);
+
+%Output the file
 outFilteredFile = fullfile('/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation', "R20_filtered_table.csv");
 writetable(filteredTable, outFilteredFile);
 
