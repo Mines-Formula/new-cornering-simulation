@@ -38,7 +38,7 @@ end
 
 Table = vertcat(allTables{:});
 
-finalTable = Table(:, ["RoadSpeed", "TirePressure", "InclinationAngle", "NormalForce", "SlipAngle", "ElapsedTime", "Index"]);
+finalTable = Table(:, ["RoadSpeed", "TirePressure", "InclinationAngle", "NormalForce", "SlipAngle", "ElapsedTime", "LateralForce", "Index"]);
 finalTable.RoadSpeed = round(finalTable.RoadSpeed);
 finalTable.TirePressure = floor(finalTable.TirePressure);
 finalTable.InclinationAngle = floor(finalTable.InclinationAngle * 10) / 10;

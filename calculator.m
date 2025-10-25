@@ -1,6 +1,6 @@
 clc, clearvars, clear all
 
-dataPath = '/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation/R20_infoTable.csv';
+dataPath = '/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation/R20_ranges.csv';
 data = readtable(dataPath);
 
 FZ = data.NormalForce;
@@ -12,7 +12,7 @@ L = [1, 1, 1, 1, 1, 1, 1, 1];
 
 FY = pacejka(P, L, FZ, IA, alpha);
 
-data.FYPacejka = FY;
+data.Calculated_FY = FY;
 
 outFile = fullfile('/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation', 'R20_with_FY.csv');
 writetable(data, outFile);

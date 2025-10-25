@@ -3,6 +3,7 @@ clc, clearvars, clear all
 inputFile = '/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation/R20_filtered_table.csv';
 filteredTable = readtable(inputFile);
 
+% These values are the ones where slip angle is moving
 ranges = [13.0, 91.86; 239.92, 460.94; 716.424, 903.17];
 
 mask = false(height(filteredTable), 1);
