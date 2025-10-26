@@ -1,6 +1,6 @@
 clc, clearvars, clear all
 
-dataPath = '/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation/R20_with_FY.csv';
+dataPath = '/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation/R20_with_FY_binned.csv';
 data = readtable(dataPath);
 
 FZ = data.NormalForce;
