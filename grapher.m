@@ -1,6 +1,6 @@
 clc, clearvars, clear all
 
-dataPath = '/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation/R20_with_FY_binned.csv';
+dataPath = '/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation/R20_with_FY.csv';
 data = readtable(dataPath);
 
 FZ = data.NormalForce;
@@ -26,3 +26,8 @@ colors = turbo(numBins);
 
 timeWindows = [13.0, 91.86; 239.92, 460.94; 716.424, 903.17];
 
+for w = 1:size(timeWindows, 1)
+    tStart = timeWindows(w, 1);
+    tEnd = timeWindows(w, 2);
+
+end
