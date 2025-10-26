@@ -1,8 +1,0 @@
-clc, clearvars, clear all
-
-path = '/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation';
-allDataPath = fullfile(path, 'R20_infoTable.csv');
-rangeDataPath = fullfile(path, 'R20_ranges.csv');
-
-allData = readtable(allDataPath);
-rangeData = readtable(rangeDataPath);

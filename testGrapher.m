@@ -43,15 +43,31 @@ ylabel('Slip Angle (deg)');
 title('Slip Angle vs. Time');
 grid on;
 
-subplot(3,1,3);
-plot(t, filteredAll.TirePressure, 'Color', [0.1 0.6 0.1], 'LineWidth', 1.5);
-xlabel('Elapsed Time (s)');
-ylabel('Tire Pressure (PSI)');
-title('Tire Pressure vs. Time');
-grid on;
+%subplot(3,1,3);
+%plot(t, filteredAll.TirePressure, 'Color', [0.1 0.6 0.1], 'LineWidth', 1.5);
+%xlabel('Elapsed Time (s)');
+%ylabel('Tire Pressure (PSI)');
+%title('Tire Pressure vs. Time');
+%grid on;
 
+%subplot(3, 1, 3);
+%plot(t, filteredMoreAll.LongitudinalForce, 'r');
+%xlabel('Elapsed Time');
+%ylabel('SlipAngle vs. Time');
+%title('Longitudinal Force vs. Time');
+%grid on;
 
+%subplot(3, 1, 3);
+%plot(t, filteredMoreAll.OverturningMoment, 'r');
+%title('Overtuning Force vs. Time');
 
+%subplot(3, 1, 3);
+%plot(t, filteredMoreAll.AligningTorque, 'r');
+%title('Aligning Torque vs. Time');
+
+subplot(3, 1, 3);
+plot(t, filteredAll.LateralForce, 'r');
+title('Lateral Force vs Time');
 
 sgtitle('Parameter Behavior in Selected Ranges (R20 Test)');
 
