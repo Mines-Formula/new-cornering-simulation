@@ -41,15 +41,9 @@ for w = 1:size(timeWindows, 1)
             scatter(alphaSorted(binMask), FY_exp_sorted(binMask), 10, 'MarkerFaceColor', colors(i,:), 'MarkerEdgeColor', 'none', 'DisplayName', sprintf('Exp FY - FZ ≈ %d', uniqueBins(i)));
         end
     end
-
     hold off;
-    grid on;
-    xlabel('Slip Angle');
-    ylabel('Lateral Force FY');
-
-    colormap(colors);
-    c = colorbar;
-    c.Ticks = linspace(0, 1, numBins);
-    c.TickLabels = string(uniqueBins);
+grid on;
+xlabel('Slip Angle');
+ylabel('Lateral Force FY');
 
 end
