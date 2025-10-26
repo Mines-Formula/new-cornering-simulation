@@ -30,7 +30,7 @@ for w = 1:size(timeWindows, 1)
     tStart = timeWindows(w, 1);
     tEnd = timeWindows(w, 2);
 
-    timeMask = (tSorted >= timeStart) & (timeSorted <= tEnd);
+    timeMask = (timeSorted >= tStart) & (timeSorted <= tEnd);
 
     figure;
     hold on;
