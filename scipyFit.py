@@ -22,13 +22,15 @@ def pacejka(P_noCamber, P_camber, L, FZ, IA, alpha):
 
     return FY
 
-#make them as close to each other as possible
+#make coefficients not based on camber as close to each other as possible
 def diff_noCamber(P_noCamber, P_camber, L, FZ, IA, alpha, Fy_measured):
     return pacejka(P_noCamber, P_camber, L, FZ, IA, alpha) - Fy_measured
 
+#make coefficients based on camber as close as possible
 def diff_camber(P_camber, P_noCamber, L, FZ, IA, alpha, Fy_measured):
     return pacejka(P_noCamber, P_camber, L, FZ, IA, alpha) - Fy_measured
 
+#update P to have the new coefficients not based on camber
 def edit_P_with_no_Camber(P, P_noCamber):
     P[0] = P_noCamber[0]
     P[1] = P_noCamber[1]
@@ -44,6 +46,7 @@ def edit_P_with_no_Camber(P, P_noCamber):
     P[15] = P_noCamber[11]
     return P
 
+#update P to have the new coefficients based on camber
 def edit_P_with_camber(P, P_camber):
     P[4] = P_camber[0]
     P[11] = P_camber[1]
@@ -53,6 +56,30 @@ def edit_P_with_camber(P, P_camber):
     P[17] = P_camber[5]
     P[18] = P_camber[6]
     return P
+
+#finds coefficients that should be zero but weren't calculated to be zero
+def find_non_zeros(P):
+    if P[7] != 0:
+        print(f"Item P[7] should be 0 but it is actually {P[7]}")
+    if P[8] != 0:
+        print(f"Item P[8] should be 0 but it is actually {P[8]}")
+    if P[12] != 0:
+        print(f"Item P[12] should be 0 but it is actually {P[12]}")
+    if P[13] != 0:
+        print(f"Item P[13] should be 0 but it is actually {P[13]}")
+    if P[15] != 0:
+        print(f"Item P[15] should be 0 but it is actually {P[15]}")
+    if P[16] != 0:
+        print(f"Item P[16] should be 0 but it is actually {P[16]}")
+    if P[17] != 0:
+        print(f"Item P[17] should be 0 but it is actually {P[17]}")
+
+#don't know if this is needed, but some datapoints seem to be very insignificant
+#removes any datapoints that seem like they should be insignificant
+def remove_small_data(P):
+    for i in range(len(P)):
+        if abs(P[i]) < 1e-15:
+            P[i] = 0
 
 #load the data
 df = pd.read_csv("C:/Users/ajsau/Documents/formula/corneringSim/cornering-simulation/LCO_infoTable.csv")
@@ -71,6 +98,7 @@ result_noCamber_init = least_squares(diff_noCamber, P_noCamber, args=(P_camber, 
 P_noCamber = result_noCamber_init.x
 P = edit_P_with_no_Camber(P, P_noCamber)
 print(f"Updated coefficients after optimization based on the values with no camber: {P}")
+find_non_zeros(P)
 
 #estimate the camber things 
 result_camber_init = least_squares(diff_camber, P_camber, args=(P_noCamber, L, FZ, IA, alpha, FY_measured))
@@ -78,3 +106,14 @@ result_camber_init = least_squares(diff_camber, P_camber, args=(P_noCamber, L, F
 P_camber = result_camber_init.x
 P = edit_P_with_camber(P, P_camber)
 print(f"Updated coefficients after optimization based on the values with camber: {P}")
+find_non_zeros(P)
+
+#estimate the noCamber again now that the camber coeffficients are edited
+result_camber_final = least_squares(diff_noCamber, P_noCamber, args=(P_noCamber, L, FZ, IA, alpha, FY_measured))
+#now change the coefficient - this result is the changed P_nocamber values
+P_noCamber = result_noCamber_init.x
+P = edit_P_with_no_Camber(P, P_noCamber)
+print(f"Final coefficients after complete optimization: {P}")
+remove_small_data(P)
+print(f"Final coefficients after removing insignificant data: {P}")
+find_non_zeros(P)
