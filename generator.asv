@@ -10,16 +10,13 @@ for i = 1:numel(fileList)
     filePath = fullfile(fileList(i).folder, fileList(i).name);
     curFile = load(filePath);
 
-    if ~strcmp(curFile.tireid, targetTire)
+    if ~strcmp(fileList(i).name, 'A2356raw2.mat') % curFile.tireid, targetTire
         disp(fileList(i).name);
         disp("skipped");
         continue
-    end
-
-    if strcmp(fileList(i).name, 'A2356raw2.mat')
+        if ~strcmp(fileList(i).name, 'A2356raw2.mat')
             disp(fileList(i).name);
-            disp("skipped");
-            continue
+            di
     end
 
     disp(fileList(i).name);
