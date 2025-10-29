@@ -2,7 +2,7 @@ clc, clearvars, clear all
 
 dataFolder = '/Users/Blanchards1/Documents/R20Data2';
 fileList = dir(fullfile(dataFolder, "*.mat"));
-targetTire = 'Hoosier 43070 16x6.0-10 R20, 7 inch rim';
+targetTire = 'Hoosier 43075 16x7.5-10 R20, 7 inch rim';
 
 allTables = cell(numel(fileList), 1);
 
