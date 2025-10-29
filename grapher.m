@@ -12,6 +12,16 @@ time = data.ElapsedTime;
 
 FZ_binned = round(FZ / 50) * 50;
 
+invalidBins = [0, -50, -300, -350];
+validMask = ~ismember(FZ_binned, invalidBins);
+
+FZ = FZ(validMask);
+IA = IA(validMask);
+alpha = alpha(validMask);
+FY_exp = FY_exp(validMask);
+time = time(validMask);
+FZ_binned = FZ_binned(validMask);
+
 % Graph comparison of the two
 
 [alphaSorted, idx] = sort(alpha);
@@ -28,6 +38,7 @@ figure;
 hold on;
 
 for i = 1:numBins
+
     binMask = FZ_binned_sorted == uniqueBins(i);
     scatter(alphaSorted(binMask), FY_exp_sorted(binMask), 10, 'MarkerFaceColor', colors(i,:), 'MarkerEdgeColor', 'none', 'DisplayName', sprintf('Exp FY - FZ ≈ %d', uniqueBins(i)));
     %scatter(alphaSorted(binMask), FY_calc_sorted(binMask), 10, 'MarkerEdgeColor', colors(i,:), 'MarkerFaceColor', 'none', 'DisplayName', sprintf('Calc FY - FZ ≈ %d', uniqueBins(i)));

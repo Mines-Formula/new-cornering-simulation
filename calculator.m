@@ -3,8 +3,6 @@ clc, clearvars, clear all
 dataPath = '/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation/R20_filtered_table.csv';
 data = readtable(dataPath);
 
-data = data(data.SlipAngle < -0.2 | data.SlipAngle > 0.2, :);
-
 FZ = data.NormalForce;
 IA = data.InclinationAngle;
 alpha = data.SlipAngle;
