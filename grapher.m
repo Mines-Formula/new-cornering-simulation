@@ -102,7 +102,11 @@ for w = 1:size(timeWindows, 1)
     grid on;
     xlabel('Slip Angle (deg)');
     ylabel('Lateral Force FY');
-    title(sprintf('Graph %d: Time %.2f–%.2f s', w, tStart, tEnd));
+    if isempty(targetFZ)
+        title(sprintf('Graph %d: Time %.2f–%.2f s (All FZ)', w, tStart, tEnd));
+    else
+        title(sprintf('Graph %d: Time %.2f–%.2f s (FZ = %d)', w, tStart, tEnd, targetFZ));
+    end
 
     colormap(colors);
     c = colorbar;
