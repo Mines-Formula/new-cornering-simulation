@@ -27,10 +27,13 @@ figure;
 t = trimmedTable.ElapsedTime;
 NF = trimmedTable.NormalForce;
 SA = trimmedTable.SlipAngle;
+CF = trimmedTable.LateralForce;
 
 plot(t, NF, 'b-', 'LineWidth', 1.5); % Normal Force (blue line)
 hold on;
 plot(t, SA, 'r-', 'LineWidth', 1.5); % Slip Angle (red line)
+hold on;
+plot(t, CF, 'g-', 'LineWidth', 1.5);
 hold off;
 
 grid on;

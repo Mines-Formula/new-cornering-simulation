@@ -9,6 +9,8 @@ alpha = data.SlipAngle;
 FY_exp = data.LateralForce;
 time = data.ElapsedTime;
 
+targetFZ = 250;
+
 %% Define time-based binning rules
 
 binningRules = [
@@ -54,6 +56,16 @@ alpha = alpha(validMask);
 FY_exp = FY_exp(validMask);
 time = time(validMask);
 FZ_binned = FZ_binned_by_time(validMask);
+
+if ~isempty(targetFZ) 
+    FZmask = FZ_binned == targetFZ;
+    FZ = FZ(FZmask);
+    IA = IA(FZmask);
+    alpha = alpha(FZmask);
+    FY_exp = FY_exp(FZmask);
+    time = time(FZmask);
+    FZ_binned = FZ_binned(FZmask);
+end
 
 %% Graphing setup
 [alphaSorted, idx] = sort(alpha);
