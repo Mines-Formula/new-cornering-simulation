@@ -7,26 +7,57 @@ FZ = data.NormalForce;
 IA = data.InclinationAngle;
 alpha = data.SlipAngle;
 FY_exp = data.LateralForce;
-%FY = data.FY;
 time = data.ElapsedTime;
 
-FZ_binned = round(FZ / 50) * 50;
+%% Define time-based binning rules
 
-invalidBins = [0, -50, -300, -350];
-validMask = ~ismember(FZ_binned, invalidBins);
+binningRules = [
+    % Graph 1
+    12.64   91.83   250;
+    % Graph 2
+    239.67  297.15  250;
+    297.31  330.97  200;
+    331.13  364.77  150;
+    365.11  398.55  50;
+    398.98  432.28  250;
+    432.68  461.73  100;
+    % Graph 3
+    716.664 739.664 250;
+    739.914 773.473 200;
+    773.643 802.842 150;
+    816.862 836.801 50;
+    841.571 874.86  250;
+    875.201 904.31  100
+];
 
+%% Assign FZ_binned based on time windows
+FZ_binned_by_time = zeros(size(time));
+
+for i = 1:size(binningRules, 1)
+    tStart = binningRules(i, 1);
+    tEnd   = binningRules(i, 2);
+    binVal = binningRules(i, 3);
+
+    inRange = (time >= tStart) & (time <= tEnd);
+    FZ_binned_by_time(inRange) = binVal;
+end
+
+%% Exclude zero slip angle in Graph 3's 816.862–836.801 range
+excludeMask = (time >= 816.862 & time <= 836.801) & (abs(alpha) < 1e-3);
+FZ_binned_by_time(excludeMask) = 0;
+
+%% Filter invalid (unbinned) data
+validMask = FZ_binned_by_time ~= 0;
 FZ = FZ(validMask);
 IA = IA(validMask);
 alpha = alpha(validMask);
 FY_exp = FY_exp(validMask);
 time = time(validMask);
-FZ_binned = FZ_binned(validMask);
+FZ_binned = FZ_binned_by_time(validMask);
 
-% Graph comparison of the two
-
+%% Graphing setup
 [alphaSorted, idx] = sort(alpha);
 FY_exp_sorted = FY_exp(idx);
-%FY_calc_sorted = FY(idx);
 FZ_binned_sorted = FZ_binned(idx);
 timeSorted = time(idx);
 
@@ -36,10 +67,10 @@ colors = turbo(numBins);
 
 timeWindows = [12.64, 91.83; 239.67, 461.73; 715.954, 904.31];
 
+%% Plot each main time window
 for w = 1:size(timeWindows, 1)
     tStart = timeWindows(w, 1);
     tEnd = timeWindows(w, 2);
-
     timeMask = (timeSorted >= tStart) & (timeSorted <= tEnd);
 
     figure;
@@ -48,21 +79,25 @@ for w = 1:size(timeWindows, 1)
     for i = 1:numBins
         binMask = (FZ_binned_sorted == uniqueBins(i)) & timeMask;
         if any(binMask)
-            scatter(alphaSorted(binMask), FY_exp_sorted(binMask), 10, 'MarkerFaceColor', colors(i,:), 'MarkerEdgeColor', 'none', 'DisplayName', sprintf('Exp FY - FZ ≈ %d', uniqueBins(i)));
+            scatter(alphaSorted(binMask), FY_exp_sorted(binMask), 10, ...
+                'MarkerFaceColor', colors(i,:), ...
+                'MarkerEdgeColor', 'none', ...
+                'DisplayName', sprintf('Exp FY - FZ ≈ %d', uniqueBins(i)));
         end
     end
 
     hold off;
     grid on;
-    xlabel('Slip Angle');
+    xlabel('Slip Angle (deg)');
     ylabel('Lateral Force FY');
+    title(sprintf('Graph %d: Time %.2f–%.2f s', w, tStart, tEnd));
 
     colormap(colors);
     c = colorbar;
     c.Ticks = linspace(0, 1, numBins);
     c.TickLabels = string(uniqueBins);
-
 end
+
 
 
 
