@@ -9,7 +9,7 @@ alpha = data.SlipAngle;
 FY_exp = data.LateralForce;
 time = data.ElapsedTime;
 
-targetFZ = 250;
+targetFZ = [];
 
 %% Define time-based binning rules
 
@@ -91,7 +91,7 @@ for w = 1:size(timeWindows, 1)
     for i = 1:numBins
         binMask = (FZ_binned_sorted == uniqueBins(i)) & timeMask;
         if any(binMask)
-            scatter(alphaSorted(binMask), FY_exp_sorted(binMask), 10, ...
+            scatter(alphaSorted(binMask), FY_exp_sorted(binMask), 5, ...
                 'MarkerFaceColor', colors(i,:), ...
                 'MarkerEdgeColor', 'none', ...
                 'DisplayName', sprintf('Exp FY - FZ ≈ %d', uniqueBins(i)));
