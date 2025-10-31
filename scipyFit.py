@@ -109,7 +109,7 @@ print(f"Updated coefficients after optimization based on the values with camber:
 find_non_zeros(P)
 
 #estimate the noCamber again now that the camber coeffficients are edited
-result_camber_final = least_squares(diff_noCamber, P_noCamber, args=(P_noCamber, L, FZ, IA, alpha, FY_measured))
+result_camber_final = least_squares(diff_noCamber, P_noCamber, args=(P_camber, L, FZ, IA, alpha, FY_measured))
 #now change the coefficient - this result is the changed P_nocamber values
 P_noCamber = result_noCamber_init.x
 P = edit_P_with_no_Camber(P, P_noCamber)
