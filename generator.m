@@ -1,7 +1,7 @@
 clc, clearvars, clear all
 
 dataFile = '/Users/Blanchards1/Documents/Round9/A2356run6.mat';
-outputFolder = '/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation';
+outputFolder = '/Users/Blanchards1/Documents/FormulaSim/Output/R20Round6';
 
 idxRange50 = 23698:24905;
 idxRange100 = 26192:27334;

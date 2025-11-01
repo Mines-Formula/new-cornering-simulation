@@ -1,6 +1,6 @@
 clc, clearvars, clear all
 
-dataFolder = '/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation';
+dataFolder = '/Users/Blanchards1/Documents/FormulaSim/Output/R20Round6';
 csvFiles = dir(fullfile(dataFolder, 'R20_FZ_*_Round6_filtered.csv'));
 
 allData = table();
