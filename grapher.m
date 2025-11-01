@@ -9,7 +9,7 @@ alpha = data.SlipAngle;
 FY_exp = data.LateralForce;
 time = data.ElapsedTime;
 
-targetFZ = 250;
+targetFZ = [];
 
 %% Define time-based binning rules
 
@@ -77,17 +77,17 @@ uniqueBins = unique(FZ_binned_sorted);
 numBins = numel(uniqueBins);
 colors = turbo(numBins);
 
-timeWindows = [12.64, 91.83; 239.67, 461.73; 715.954, 904.31];
+timeWindows = [12.59, 92.96; 244.89, 291.06; 414.12, 425.77];
 
 %% This is the butterworth sort
-fs = 100;
-fc = 10;
-order = 4;
-[b, a] = butter(order, fc/(fs/2));
-FY_filtered = filtfilt(b, a, FY_exp_sorted);
-alpha_filtered = filtfilt(b, a, alphaSorted);
-FY_exp_sort = FY_filtered;
-alphaSort = alpha_filtered;
+%fs = 100;
+%fc = 10;
+%order = 4;
+%[b, a] = butter(order, fc/(fs/2));
+%FY_filtered = filtfilt(b, a, FY_exp_sorted);
+%alpha_filtered = filtfilt(b, a, alphaSorted);
+%FY_exp_sort = FY_filtered;
+%alphaSort = alpha_filtered;
 
 %% Diagnosing Plot
 figure;

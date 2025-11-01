@@ -4,7 +4,7 @@ inputFile = '/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation/R2
 filteredTable = readtable(inputFile);
 
 % These values are the ones where slip angle is moving
-ranges = [12.59, 92.96; 244.89, 291.06; 414.12, 425.77];
+ranges = [12.59, 92.96; 244.89, 291.06; 414.12, 425.];
 
 mask = false(height(filteredTable), 1);
 for i = 1:size(ranges, 1)
