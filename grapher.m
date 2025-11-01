@@ -80,14 +80,21 @@ colors = turbo(numBins);
 timeWindows = [12.64, 91.83; 239.67, 461.73; 715.954, 904.31];
 
 %% This is the butterworth sort
-fs = 100;
-fc = 2;
-order = 3;
-[b, a] = butter(order, fc/(fs/2));
-FY_filtered = filtfilt(b, a, FY_exp_sorted);
-alpha_filtered = filtfilt(b, a, alphaSorted);
-FY_exp_sort = FY_Filtered;
-alphaSort = alpha_filtered;
+%fs = 100;
+%fc = 2;
+%order = 3;
+%[b, a] = butter(order, fc/(fs/2));
+%FY_filtered = filtfilt(b, a, FY_exp_sorted);
+%alpha_filtered = filtfilt(b, a, alphaSorted);
+%FY_exp_sort = FY_filtered;
+%alphaSort = alpha_filtered;
+
+%% Diagnosing Plot
+scatter(time, FY_exp, 3, FZ_binned, 'filled');
+xlabel('Time (s)');
+ylabel('FY (N)');
+title('FY vs Time colored by FZ bin');
+colorbar;
 
 %% Plot each main time window
 for w = 1:size(timeWindows, 1)
