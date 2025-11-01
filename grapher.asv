@@ -83,10 +83,7 @@ fs = 100;
 fc = 2;
 order = 3;
 [b, a] = butter(order, fc/(fs/2));
-FY_filtered = filtfilt(b, a, FY_exp_sorted);
-alpha_filtered = filtfilt(b, a, alphaSorted);
-FY_exp_sort = FY_Filtered;
-alphaSort = alpha_filtered;
+FY_filtered = filtfilt(b, a, FY)
 
 %% Plot each main time window
 for w = 1:size(timeWindows, 1)
