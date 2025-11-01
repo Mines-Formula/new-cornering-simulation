@@ -54,7 +54,7 @@ for i = 1:numel(FZValues)
     FZVal = FZValues(i);
     table = allData(allData.FZbin == FZVal, :);
 
-    figure('Name', sprintf('FZ_%d', FZVal), 'NumberTitle', 'off');
+    figSingle = figure('Name', sprintf('FZ_%d', FZVal), 'NumberTitle', 'off');
     scatter(table.SlipAngle, table.LateralForce, 5, 'MarkerFaceColor', colors(i,:), 'MarkerEdgeColor', 'none');
     grid on;
     xlabel('Slip Angle (deg)');
