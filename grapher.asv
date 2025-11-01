@@ -11,16 +11,4 @@ for i = 1:numel(csvFiles)
     table = readtable(filePath);
     tokens = regexp(csvFiles(i).name, 'FZ_(\d+)', 'tokens');
     if ~isempty(tokens)
-        FZval = str2double(tokens{1}{1});
-    else
-        FZval = i * 100;
-    end
-    FZValues(i) = FZval;
-
-    table.FZbin = repmat(FZval, height(table), 1);
-    allData = [allData; table];
-end
-
-[~, sortIdx] = sort(FZValues);
-FZValues = FZValues(sortIdx);
-colors = turbo(numel(FZValues));
+        FZval = str2double
