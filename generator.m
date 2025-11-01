@@ -1,95 +1,47 @@
 clc, clearvars, clear all
 
-dataFolder = '/Users/Blanchards1/Documents/R20Data2';
-fileList = dir(fullfile(dataFolder, "*.mat"));
-targetTire = 'Hoosier 43075 16x7.5-10 R20, 7 inch rim';
+dataFile = '/Users/Blanchards1/Documents/Round9/A2356run4.mat';
+outputFolder = '/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation';
 
-allTables = cell(numel(fileList), 1);
+idxRange50 = 5006:6220;
+idxRange100 = 7491:8645;
+idxRange150 = 3754:4937;
+idxRange200 = 2546:3667;
+idxRange250a = 1:2484;
+idxRange250b = 6255:7418;
 
-for i = 1:numel(fileList)
-    filePath = fullfile(fileList(i).folder, fileList(i).name);
-    curFile = load(filePath);
+curFile = load(dataFile);
+disp("Loaded " + dataFile);
 
-    if ~strcmp(curFile.tireid, targetTire)
-        disp(fileList(i).name);
-        disp("skipped");
-        continue
-    end
+runTable = table(curFile.AMBTMP, curFile.ET, curFile.FX, curFile.FY, curFile.FZ, curFile.IA, curFile.MX, curFile.MZ, ...
+    curFile.N, curFile.NFX, curFile.NFY, curFile.P, curFile.RE, curFile.RL, curFile.RST, ...
+    curFile.SA, curFile.SL, curFile.SR, curFile.TSTC, curFile.TSTI, curFile.TSTO, curFile.V, ...
+    'VariableNames', {'AmbientRoomTemperature', 'ElapsedTime', 'LongitudinalForce', 'LateralForce', ...
+    'NormalForce', 'InclinationAngle', 'OverturningMoment', 'AligningTorque', 'WheelRotationalSpeed', ...
+    'NormalizedLongitudinalForce(FX/FZ)', 'NormalizedLateralForce(FY/FZ)', 'TirePressure', ...
+    'EffectiveRadius', 'LoadedRadius', 'RoadSurfaceTemperature', 'SlipAngle', 'SlipRatioTextbook', ...
+    'SlipRatioBasedOnRL', 'TireSurfaceTemperature-Center', 'TireSurfaceTemperature-Inboard', ...
+    'TireSurfaceTemperature-Outboard', 'RoadSpeed'});
 
-    if strcmp(fileList(i).name, 'A2356raw2.mat')
-            disp(fileList(i).name);
-            disp("skipped");
-            continue
-    end
+runTable.testid = repmat(string(curFile.testid), height(runTable), 1);
+runTable.tireid = repmat(string(curFile.tireid), height(runTable), 1);
+runTable.Index = (1:height(runTable))';
 
-    disp(fileList(i).name);
-    disp("Chosen");
+disp("Run table created with " + height(runTable) + " rows.");
 
-    runTable = table(curFile.AMBTMP, curFile.ET, curFile.FX, curFile.FY, curFile.FZ, curFile.IA, curFile.MX, curFile.MZ, ...
-        curFile.N, curFile.NFX, curFile.NFY, curFile.P, curFile.RE, curFile.RL, curFile.RST, ...
-        curFile.SA, curFile.SL, curFile.SR, curFile.TSTC, curFile.TSTI, curFile.TSTO, curFile.V, ...
-        'VariableNames', {'AmbientRoomTemperature', 'ElapsedTime', 'LongitudinalForce', 'LateralForce', ...
-        'NormalForce', 'InclinationAngle', 'OverturningMoment', 'AligningTorque', 'WheelRotationalSpeed', ...
-        'NormalizedLongitudinalForce(FX/FZ)', 'NormalizedLateralForce(FY/FZ)', 'TirePressure', ...
-        'EffectiveRadius', 'LoadedRadius', 'RoadSurfaceTemperature', 'SlipAngle', 'SlipRatioTextbook', ...
-        'SlipRatioBasedOnRL', 'TireSurfaceTemperature-Center', 'TireSurfaceTemperature-Inboard', ...
-        'TireSurfaceTemperature-Outboard', 'RoadSpeed'});
+subTables = struct();
 
-    runTable.testid = repmat(string(curFile.testid), height(runTable), 1);
-    runTable.tireid = repmat(string(curFile.tireid), height(runTable), 1);
-    runTable.Index = strcat(fileList(i).name, "_Line", string((1:height(runTable))'));
+subTables.FZ50 = runTable(idxRange50, :);
+subTables.FZ100 = runTable(idxRange100, :);
+subTables.FZ150 = runTable(idxRange150, :);
+subTables.FZ200 = runTable(idxRange200, :);
+subTables.FZ250 = [runTable(idxRange250a, :); runTable(idxRange250b, :)];
 
-    allTables{i} = runTable;
+outNames = fieldnames(subTables);
+for i = 1:numel(outNames)
+    fname = fullfile(outputFolder, sprintf("R20_FZ_%s.csv", outNames{i}(3:end)));
+    writetable(subTables.(outNames{i}), fname);
+    disp("Saved: " + fname);
 end
 
-Table = vertcat(allTables{:});
-
-finalTable = Table(:, ["RoadSpeed", "TirePressure", "InclinationAngle", "NormalForce", "SlipAngle", "ElapsedTime", "LateralForce", "Index"]);
-finalTable.RoadSpeed = round(finalTable.RoadSpeed);
-finalTable.TirePressure = floor(finalTable.TirePressure);
-finalTable.InclinationAngle = floor(finalTable.InclinationAngle * 10) / 10;
-
-
-finalTable = sortrows(finalTable, ["RoadSpeed", "TirePressure", "InclinationAngle"]);
-
-outAllFile = fullfile('/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation', "R20_allData.csv");
-writetable(Table, outAllFile);
-disp("Saved full unfiltered dataset: R20_allData.csv");
-
-outFile = fullfile('/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation', "R20_infoTable.csv");
-writetable(finalTable, outFile);
-
-disp("Finished OG Table");
-
-filteredTable = finalTable(finalTable.InclinationAngle == 0 & finalTable.RoadSpeed == 25 & finalTable.TirePressure == 12, :);
-
-filteredTable = sortrows(filteredTable, "ElapsedTime");
-
-[~, idx] = sortrows([filteredTable.ElapsedTime, -filteredTable.SlipAngle]); % sort by time asc, slip desc
-[~, ia] = unique(filteredTable.ElapsedTime, 'stable'); % keep first occurrence (max slip)
-filteredTable = filteredTable(sort(ia), :);
-
-%Output the file
-outFilteredFile = fullfile('/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation', "R20_filtered_table.csv");
-writetable(filteredTable, outFilteredFile);
-
-disp("FilteredTableSaved");
-
-figure;
-t = filteredTable.ElapsedTime;
-NF = filteredTable.NormalForce;
-SA = filteredTable.SlipAngle;
-CF = filteredTable.LateralForce;
-
-plot(t, NF, 'b-', 'LineWidth', 1.5); % Normal Force (blue line)
-hold on;
-plot(t, SA, 'r-', 'LineWidth', 1.5); % Slip Angle (red line)
-hold on;
-plot(t, CF, 'g-', 'LineWidth', 1.5);
-hold off;
-
-grid on;
-xlabel('Elapsed Time (s)');
-ylabel('Value');
-title('Normal Force and Slip Angle vs Time');
-legend('Normal Force (N)', 'Slip Angle (deg)', 'Location', 'best');
+disp("All FZ bin CSV files successfully exported.");
