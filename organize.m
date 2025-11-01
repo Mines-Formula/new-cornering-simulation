@@ -51,4 +51,4 @@ for i = 1:numel(csvFiles)
     disp("Plot saved: " + name + "_plot.png");
 end
 
-disp("✅ All FZ bins processed, filtered, and plotted successfully.");
+disp("All FZ bins processed, filtered, and plotted successfully.");
