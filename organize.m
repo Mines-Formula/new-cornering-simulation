@@ -2,7 +2,7 @@ clc, clearvars, clear all
 
 dataFolder = '/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation';
 
-csvFiles = dir(fullfile(dataFolder, "R20_FZ_*.csv"));
+csvFiles = dir(fullfile(dataFolder, "R20_FZ_*_Round6.csv"));
 
 for i = 1:numel(csvFiles)
     curFile = fullfile(csvFiles(i).folder, csvFiles(i).name);
@@ -48,7 +48,7 @@ for i = 1:numel(csvFiles)
     saveas(gcf, fullfile(dataFolder, sprintf('%s_plot.png', name)));
     close(gcf);
 
-    disp("Plot saved: " + name + "_plot.png");
+    disp("Plot saved: " + name + "_plot_.png");
 end
 
-disp("✅ All FZ bins processed, filtered, and plotted successfully.");
+disp("All FZ bins processed, filtered, and plotted successfully.");
