@@ -90,10 +90,25 @@ timeWindows = [12.64, 91.83; 239.67, 461.73; 715.954, 904.31];
 %alphaSort = alpha_filtered;
 
 %% Diagnosing Plot
-scatter(time, FY_exp, 3, FZ_binned, 'filled');
+figure;
+tiledlayout(2,1);
+
+
+nexttile;
+scatter(time, FY_exp, 5, FZ_binned, 'filled');
 xlabel('Time (s)');
 ylabel('FY (N)');
 title('FY vs Time colored by FZ bin');
+colorbar;
+grid on;
+
+
+nexttile;
+scatter(time, alpha, 5, FZ_binned, 'filled');
+xlabel('Time (s)');
+ylabel('Slip Angle (deg)');
+title('Slip Angle vs Time colored by FZ bin');
+grid on;
 colorbar;
 
 %% Plot each main time window
