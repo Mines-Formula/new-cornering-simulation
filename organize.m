@@ -2,13 +2,7 @@ clc, clearvars, clear all
 
 dataFolder = '/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation';
 
-csvFiles = {
-    'R20_FZ_50.csv'
-    'R20_FZ_100.csv'
-    'R20_FZ_150.csv'
-    'R20_FZ_200.csv'
-    'R20_FZ_250.csv'
-};
+csvFiles = dir(fullfile(dataFolder, "R20_FZ_*.csv"));
 
 for i = 1:numel(csvFiles)
     curFile = fullfile(dataFolder, csvFiles{i});
