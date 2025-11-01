@@ -1,8 +1,8 @@
 clc, clearvars, clear all
 
-dataFolder = '/Users/Blanchards1/Documents/FormulaSim/Output/LC0Round18';
+dataFolder = '/Users/Blanchards1/Documents/FormulaSim/Output/LC0Round19';
 
-csvFiles = dir(fullfile(dataFolder, "LC0_FZ_*_Round18.csv"));
+csvFiles = dir(fullfile(dataFolder, "LC0_FZ_*_Round19.csv"));
 
 for i = 1:numel(csvFiles)
     curFile = fullfile(csvFiles(i).folder, csvFiles(i).name);
