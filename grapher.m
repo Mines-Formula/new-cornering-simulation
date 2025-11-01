@@ -1,7 +1,7 @@
 clc, clearvars, clear all
 
-dataFolder = '/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation';
-csvFiles = dir(fullfile(dataFolder, 'R20_FZ_*_Round6_filtered.csv'));
+dataFolder = '/Users/Blanchards1/Documents/FormulaSim/Output/LC0Round18';
+csvFiles = dir(fullfile(dataFolder, 'LC0_FZ_*_Round18_filtered.csv'));
 
 allData = table();
 FZValues = zeros(numel(csvFiles),1);

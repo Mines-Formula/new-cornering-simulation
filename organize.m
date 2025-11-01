@@ -1,8 +1,8 @@
 clc, clearvars, clear all
 
-dataFolder = '/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation';
+dataFolder = '/Users/Blanchards1/Documents/FormulaSim/Output/LC0Round18';
 
-csvFiles = dir(fullfile(dataFolder, "R20_FZ_*_Round6.csv"));
+csvFiles = dir(fullfile(dataFolder, "LC0_FZ_*_Round18.csv"));
 
 for i = 1:numel(csvFiles)
     curFile = fullfile(csvFiles(i).folder, csvFiles(i).name);
@@ -45,10 +45,10 @@ for i = 1:numel(csvFiles)
     title(strrep(outName, '_', '\_'));
     legend('Normal Force (N)', 'Slip Angle (deg)', 'Lateral Force (N)', 'Location', 'best');
 
-    saveas(gcf, fullfile(dataFolder, sprintf('%s_plot.png', name)));
+    saveas(gcf, fullfile(dataFolder, sprintf('%s_diagnostic_plot.png', name)));
     close(gcf);
 
-    disp("Plot saved: " + name + "_plot_.png");
+    disp("Plot saved: " + name + "_diagnostic_plot_.png");
 end
 
 disp("All FZ bins processed, filtered, and plotted successfully.");
