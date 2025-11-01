@@ -7,15 +7,15 @@ def pacejka(P_noCamber, P_camber, L, FZ, IA, alpha):
     #alpha is slip angle
     #P = [250, 1.4, 2.4, -0.25, 3, -0.1, -1.5, 0, 0, -30.5, 1.15, 1, 0, 0, -0.128, 0, 0, 0, 1.43];
     #L = [1, 1, 1, 1, 1, 1, 1, 1];
-    dfz = (FZ - P_noCamber[0]) / P_noCamber[0]
+    dfz = (FZ - 250) / 250
     Svy = FZ * (0 + 0*dfz + (0 + P_camber[6]*dfz)*IA) * L[7] * L[4]
     Ey = (P_noCamber[4] + P_noCamber[5]*dfz) * (1 - (0 + 0*IA) * np.sign(alpha)) * L[6]
     Shy = (0 + 0*dfz + P_camber[3]*IA) * L[5]
     alphaY = alpha + Shy
     Cy = P_noCamber[1] * L[1]
     Dy = FZ * (P_noCamber[2] + P_noCamber[3]*dfz) * (1 - P_camber[0]*IA**2) * L[0]
-    x1 = 2 * np.arctan(FZ / (P_noCamber[9]*P_noCamber[0]*L[2]))
-    x2 = P_noCamber[8]*P_noCamber[0]*np.sin(x1) * (1 - P_camber[1]*np.abs(IA)) * L[3] * L[4]
+    x1 = 2 * np.arctan(FZ / (P_noCamber[9]*250*L[2]))
+    x2 = P_noCamber[8]*250*np.sin(x1) * (1 - P_camber[1]*np.abs(IA)) * L[3] * L[4]
     By = x2 / (Cy * Dy)
     x3 = By * alphaY
     FY = Dy * np.sin(Cy * np.arctan(x3 - Ey * (x3 - np.arctan(x3)))) + Svy
@@ -24,11 +24,11 @@ def pacejka(P_noCamber, P_camber, L, FZ, IA, alpha):
 
 #make coefficients not based on camber as close to each other as possible
 def diff_noCamber(P_noCamber, P_camber, L, FZ, IA, alpha, Fy_measured):
-    return Fy_measured - pacejka(P_noCamber, P_camber, L, FZ, IA, alpha)
+    return abs(Fy_measured - pacejka(P_noCamber, P_camber, L, FZ, IA, alpha))
 
 #make coefficients based on camber as close as possible
 def diff_camber(P_camber, P_noCamber, L, FZ, IA, alpha, Fy_measured):
-    return Fy_measured - pacejka(P_noCamber, P_camber, L, FZ, IA, alpha)
+    return abs(Fy_measured - pacejka(P_noCamber, P_camber, L, FZ, IA, alpha))
 
 #update P to have the new coefficients not based on camber
 def edit_P_with_no_Camber(P, P_noCamber):
@@ -82,7 +82,7 @@ def remove_small_data(P):
             P[i] = 0
 
 #load the data
-df = pd.read_csv("C:/Users/ajsau/Downloads/R20_ranges.csv")
+df = pd.read_csv("C:/Users/ajsau/Downloads/R20_FZ_250_filtered.csv")
 P = np.array([250, 1.4, 2.4, -0.25, 3, -0.1, -1.5, 0, 0, -30.5, 1.15, 1, 0, 0, -0.128, 0, 0, 0, 1.43])
 P_noCamber = np.array([P[0], P[1], P[2], P[3], P[5], P[6], P[7], P[8], P[9], P[10], P[12], P[15]])
 P_camber = np.array([P[4], P[11], P[13], P[14], P[16], P[17], P[18]])
