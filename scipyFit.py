@@ -24,11 +24,21 @@ def pacejka(P_noCamber, P_camber, L, FZ, IA, alpha):
 
 #make coefficients not based on camber as close to each other as possible
 def diff_noCamber(P_noCamber, P_camber, L, FZ, IA, alpha, Fy_measured):
-    return abs(Fy_measured - pacejka(P_noCamber, P_camber, L, FZ, IA, alpha))
+    FY_calculated = pacejka(P_noCamber, P_camber, L, FZ, IA, alpha)
+    FY_diff_total = 0
+    for i in range(len(FY_measured)):
+        FY_diff_total += abs(FY_calculated[i] - FY_measured[i])
+    return FY_diff_total / len(FY_measured)
+    #return abs(Fy_measured - pacejka(P_noCamber, P_camber, L, FZ, IA, alpha))
 
 #make coefficients based on camber as close as possible
 def diff_camber(P_camber, P_noCamber, L, FZ, IA, alpha, Fy_measured):
-    return abs(Fy_measured - pacejka(P_noCamber, P_camber, L, FZ, IA, alpha))
+    FY_calculated = pacejka(P_noCamber, P_camber, L, FZ, IA, alpha)
+    FY_diff_total = 0
+    for i in range(len(FY_measured)):
+        FY_diff_total += abs(FY_calculated[i] - FY_measured[i])
+    return FY_diff_total / len(FY_measured)
+    #return abs(Fy_measured - pacejka(P_noCamber, P_camber, L, FZ, IA, alpha))
 
 #update P to have the new coefficients not based on camber
 def edit_P_with_no_Camber(P, P_noCamber):
