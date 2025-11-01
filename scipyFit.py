@@ -24,11 +24,11 @@ def pacejka(P_noCamber, P_camber, L, FZ, IA, alpha):
 
 #make coefficients not based on camber as close to each other as possible
 def diff_noCamber(P_noCamber, P_camber, L, FZ, IA, alpha, Fy_measured):
-    return pacejka(P_noCamber, P_camber, L, FZ, IA, alpha) - Fy_measured
+    return Fy_measured - pacejka(P_noCamber, P_camber, L, FZ, IA, alpha)
 
 #make coefficients based on camber as close as possible
 def diff_camber(P_camber, P_noCamber, L, FZ, IA, alpha, Fy_measured):
-    return pacejka(P_noCamber, P_camber, L, FZ, IA, alpha) - Fy_measured
+    return Fy_measured - pacejka(P_noCamber, P_camber, L, FZ, IA, alpha)
 
 #update P to have the new coefficients not based on camber
 def edit_P_with_no_Camber(P, P_noCamber):
@@ -78,11 +78,11 @@ def find_non_zeros(P):
 #removes any datapoints that seem like they should be insignificant
 def remove_small_data(P):
     for i in range(len(P)):
-        if abs(P[i]) < 1e-15:
+        if abs(P[i]) < 1e-10:
             P[i] = 0
 
 #load the data
-df = pd.read_csv("C:/Users/ajsau/Documents/formula/corneringSim/cornering-simulation/LCO_infoTable.csv")
+df = pd.read_csv("C:/Users/ajsau/Downloads/R20_ranges.csv")
 P = np.array([250, 1.4, 2.4, -0.25, 3, -0.1, -1.5, 0, 0, -30.5, 1.15, 1, 0, 0, -0.128, 0, 0, 0, 1.43])
 P_noCamber = np.array([P[0], P[1], P[2], P[3], P[5], P[6], P[7], P[8], P[9], P[10], P[12], P[15]])
 P_camber = np.array([P[4], P[11], P[13], P[14], P[16], P[17], P[18]])
@@ -90,13 +90,14 @@ L = np.array([1, 1, 1, 1, 1, 1, 1, 1])
 FZ = df["NormalForce"]
 IA = df["InclinationAngle"]
 alpha = df["SlipAngle"]
-FY_measured = df["CorneringForceMeasured"]
+FY_measured = df["LateralForce"]
 
 #estimate the noCamber things first
 result_noCamber_init = least_squares(diff_noCamber, P_noCamber, args=(P_camber, L, FZ, IA, alpha, FY_measured))
 #now change the coefficient - this result is the changed P_nocamber values
 P_noCamber = result_noCamber_init.x
 P = edit_P_with_no_Camber(P, P_noCamber)
+remove_small_data(P)
 print(f"Updated coefficients after optimization based on the values with no camber: {P}")
 find_non_zeros(P)
 
@@ -105,6 +106,7 @@ result_camber_init = least_squares(diff_camber, P_camber, args=(P_noCamber, L, F
 #change the coefficient array
 P_camber = result_camber_init.x
 P = edit_P_with_camber(P, P_camber)
+remove_small_data(P)
 print(f"Updated coefficients after optimization based on the values with camber: {P}")
 find_non_zeros(P)
 
@@ -113,7 +115,7 @@ result_camber_final = least_squares(diff_noCamber, P_noCamber, args=(P_camber, L
 #now change the coefficient - this result is the changed P_nocamber values
 P_noCamber = result_noCamber_init.x
 P = edit_P_with_no_Camber(P, P_noCamber)
-print(f"Final coefficients after complete optimization: {P}")
 remove_small_data(P)
 print(f"Final coefficients after removing insignificant data: {P}")
+print(f"Final cost: {result_noCamber_init.cost}")
 find_non_zeros(P)
