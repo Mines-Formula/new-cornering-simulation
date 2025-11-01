@@ -3,12 +3,12 @@ clc, clearvars, clear all
 dataFile = '/Users/Blanchards1/Documents/Round9/A1965run18.mat';
 outputFolder = '/Users/Blanchards1/Documents/FormulaSim/Output/LC0Round18';
 
-idxRange50 = 3767:4985;
-idxRange100 = 6330:7477;
-idxRange150 = 2568:3737;
-idxRange200 = 1300:2480;
-idxRange250a = 1:1235;
-idxRange250b = 5014:6233;
+idxRange50 = 23698:24905;
+idxRange100 = 26192:27334;
+idxRange150 = 22439:23646;
+idxRange200 = 21195:22363;
+idxRange250a = 19947:21171;
+idxRange250b = 24933:26158;
 
 curFile = load(dataFile);
 disp("Loaded " + dataFile);
