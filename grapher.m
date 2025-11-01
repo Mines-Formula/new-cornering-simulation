@@ -79,6 +79,7 @@ colors = turbo(numBins);
 
 timeWindows = [12.64, 91.83; 239.67, 461.73; 715.954, 904.31];
 
+%% This is the butterworth sort
 fs = 100;
 fc = 2;
 order = 3;
