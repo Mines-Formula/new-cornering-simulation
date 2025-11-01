@@ -1,14 +1,14 @@
 clc, clearvars, clear all
 
-dataFile = '/Users/Blanchards1/Documents/Round9/A2356run4.mat';
+dataFile = '/Users/Blanchards1/Documents/Round9/A2356run6.mat';
 outputFolder = '/Users/Blanchards1/Documents/FormulaSim/new-cornering-simulation';
 
-idxRange50 = 5006:6220;
-idxRange100 = 7491:8645;
-idxRange150 = 3754:4937;
-idxRange200 = 2546:3667;
-idxRange250a = 1:2484;
-idxRange250b = 6255:7418;
+idxRange50 = 3796:4977;
+idxRange100 = 6248:7451;
+idxRange150 = 2506:3704;
+idxRange200 = 1259:2420;
+idxRange250a = 1:1236;
+idxRange250b = 4997:6222;
 
 curFile = load(dataFile);
 disp("Loaded " + dataFile);
@@ -39,7 +39,7 @@ subTables.FZ250 = [runTable(idxRange250a, :); runTable(idxRange250b, :)];
 
 outNames = fieldnames(subTables);
 for i = 1:numel(outNames)
-    fname = fullfile(outputFolder, sprintf("R20_FZ_%s.csv", outNames{i}(3:end)));
+    fname = fullfile(outputFolder, sprintf("R20_FZ_%s_Round6.csv", outNames{i}(3:end)));
     writetable(subTables.(outNames{i}), fname);
     disp("Saved: " + fname);
 end
