@@ -11,13 +11,13 @@ for i = 1:numel(csvFiles)
     table = readtable(filePath);
     tokens = regexp(csvFiles(i).name, 'FZ_(\d+)', 'tokens');
     if ~isempty(tokens)
-        FZval = str2double(tokens{1}{1});
+        FZVal = str2double(tokens{1}{1});
     else
-        FZval = i * 100;
+        FZVal = i * 100;
     end
-    FZValues(i) = FZval;
+    FZValues(i) = FZVal;
 
-    table.FZbin = repmat(FZval, height(table), 1);
+    table.FZbin = repmat(FZVal, height(table), 1);
     allData = [allData; table];
 end
 
@@ -29,8 +29,33 @@ figure('Name', 'All FZ Combined', 'NumberTitle', 'off');
 hold on;
 for i = 1:numel(FZValues)
     FZVal = FZValues(i);
-    table - allData(allData.FZbin == FZval, :);
+    table = allData(allData.FZbin == FZVal, :);
 
-    scatter(table.SlipAngle, table.LateralForce, 10, 'MarkerFaceColor', colors(i,:), 'MarkerEdgeColor', 'none', 'DisplayName', sprintf('FZ = %d N', FZval));
+    scatter(table.SlipAngle, table.LateralForce, 5, 'MarkerFaceColor', colors(i,:), 'MarkerEdgeColor', 'none', 'DisplayName', sprintf('FZ = %d N', FZVal));
 end
 
+hold off;
+grid on;
+xlabel('Slip Angle (deg)');
+ylabel('Lateral Force FY (N)');
+title('Lateral Force vs Slip Angle (All Loads)');
+legend('Location', 'bestoutside');
+colormap(colors);
+c = colorbar;
+c.Ticks = linspace(0, 1, numel(FZValues));
+c.TickLabels = string(FZValues);
+c.Label.String = 'Normal Force (FZ, N)';
+
+for i = 1:numel(FZValues)
+    FZVal = FZValues(i);
+    table = allData(allData.FZbin == FZVal, :);
+
+    figure('Name', sprintf('FZ_%d', FZVal), 'NumberTitle', 'off');
+    scatter(table.SlipAngle, table.LateralForce, 5, 'MarkerFaceColor', colors(i,:), 'MarkerEdgeColor', 'none');
+    grid on;
+    xlabel('Slip Angle (deg)');
+    ylabel('Lateral Force FY (N)');
+    title(sprintf('Lateral Force vs Slip Angle — FZ = %d N', FZVal));
+end
+
+disp("✅ All filtered FZ datasets plotted successfully.");
