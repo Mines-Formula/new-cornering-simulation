@@ -28,4 +28,27 @@ for i = 1:numel(csvFiles)
 
     disp("Saved filtered version: " + outName);
 
+    figure('Name', outName, 'NumberTitle', 'off');
+    t = filteredTable.ElapsedTime;
+    NF = filteredTable.NormalForce;
+    SA = filteredTable.SlipAngle;
+    CF = filteredTable.LateralForce;
+
+    plot(t, NF, 'b-', 'LineWidth', 1.5); hold on;
+    plot(t, SA, 'r-', 'LineWidth', 1.5);
+    plot(t, CF, 'g-', 'LineWidth', 1.5);
+    hold off;
+
+    grid on;
+    xlabel('Elapsed Time (s)');
+    ylabel('Value');
+    title(strrep(outName, '_', '\_'));
+    legend('Normal Force (N)', 'Slip Angle (deg)', 'Lateral Force (N)', 'Location', 'best');
+
+    saveas(gcf, fullfile(dataFolder, sprintf('%s_plot.png', name)));
+    close(gcf);
+
+    disp("Plot saved: " + name + "_plot.png");
 end
+
+disp("✅ All FZ bins processed, filtered, and plotted successfully.");
