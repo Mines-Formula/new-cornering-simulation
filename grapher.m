@@ -25,7 +25,7 @@ end
 FZValues = FZValues(sortIdx);
 colors = turbo(numel(FZValues));
 
-figure('Name', 'All FZ Combined', 'NumberTitle', 'off');
+figCombined = figure('Name', 'All FZ Combined', 'NumberTitle', 'off');
 hold on;
 for i = 1:numel(FZValues)
     FZVal = FZValues(i);
@@ -46,6 +46,10 @@ c.Ticks = linspace(0, 1, numel(FZValues));
 c.TickLabels = string(FZValues);
 c.Label.String = 'Normal Force (FZ, N)';
 
+outCombinedPath = fullfile(dataFolder, 'R20_All_FZ_Combined.png');
+exportgraphics(figCombined, outCombinedPath, 'Resolution', 300);
+disp(['Saved combined plot: ', outCombinedPath]);
+
 for i = 1:numel(FZValues)
     FZVal = FZValues(i);
     table = allData(allData.FZbin == FZVal, :);
@@ -56,6 +60,11 @@ for i = 1:numel(FZValues)
     xlabel('Slip Angle (deg)');
     ylabel('Lateral Force FY (N)');
     title(sprintf('Lateral Force vs Slip Angle — FZ = %d N', FZVal));
+
+    outPath = fullfile(dataFolder, sprintf('R20_FZ_%d_Plot.png', FZVal));
+    exportgraphics(figSingle, outPath, 'Resolution', 300);
+    disp(['Saved plot: ', outPath]);
+
 end
 
-disp("✅ All filtered FZ datasets plotted successfully.");
+disp("All filtered FZ datasets plotted successfully.");
