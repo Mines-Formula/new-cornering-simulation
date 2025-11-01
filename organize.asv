@@ -6,7 +6,7 @@ csvFiles = dir(fullfile(dataFolder, "R20_FZ_*.csv"));
 
 for i = 1:numel(csvFiles)
     curFile = fullfile(csvFiles(i).folder, csvFiles(i).name);
-    disp("Processing " + csvFiles(i).name);
+    disp("Processing" + csvFiles(i).name);
 
     table = readtable(curFile);
     varNames = ["RoadSpeed", "TirePressure", "InclinationAngle", "NormalForce", "SlipAngle", "ElapsedTime", "LateralForce", "Index"];
@@ -17,15 +17,6 @@ for i = 1:numel(csvFiles)
     table.InclinationAngle = floor(table.InclinationAngle * 10) / 10;
 
     table = sortrows(table, ["RoadSpeed", "TirePressure", "InclinationAngle"]);
-    filteredTable = table(table.InclinationAngle == 0 & table.RoadSpeed == 25 & table.TirePressure == 12, :);
-
-    filteredTable = sortrows(filteredTable, "ElapsedTime");
-
-    [~, name, ~] = fileparts(csvFiles(i).name);
-    outName = sprintf('%s_filtered.csv', name);
-    outPath = fullfile(dataFolder, outName);
-    writetable(filteredTable, outPath);
-
-    disp("Saved filtered version: " + outName);
+    filteredTable = table(table.InclinationAngle == 0 & table.RoadSpeed == 25 & T.TirePressure == 12, :);
 
 end
