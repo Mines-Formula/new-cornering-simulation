@@ -2,7 +2,7 @@ clc, clearvars, clear all
 
 dataFolder = '/Users/Blanchards1/Documents/FormulaSim/Output/R20Round4&5';
 
-filteredFiles = dir(fullfile(dataFolder, '*_filtered.csv'));
+filteredFiles = dir(fullfile(dataFolder, 'R20_FZ_*_IA-4_filtered.csv'));
 
 combinedTable = table();
 
@@ -20,7 +20,7 @@ end
 
 combinedTable = sortrows(combinedTable, 'NormalForce');
 
-outPath = fullfile(dataFolder, 'R20_combined_filtered.csv');
+outPath = fullfile(dataFolder, 'R20_IA-4_combined_filtered.csv');
 writetable(combinedTable, outPath);
 
 disp("Combined filtered data saved as: " + outPath);

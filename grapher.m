@@ -1,7 +1,7 @@
 clc, clearvars, clear all
 
 dataFolder = '/Users/Blanchards1/Documents/FormulaSim/Output/R20Round4&5';
-csvFiles = dir(fullfile(dataFolder, 'R20_FZ_*_filtered.csv'));
+csvFiles = dir(fullfile(dataFolder, 'R20_FZ_*_IA-4_filtered.csv'));
 
 allData = table();
 FZValues = zeros(numel(csvFiles),1);
@@ -46,7 +46,7 @@ c.Ticks = linspace(0, 1, numel(FZValues));
 c.TickLabels = string(FZValues);
 c.Label.String = 'Normal Force (FZ, N)';
 
-outCombinedPath = fullfile(dataFolder, 'R20_All_FZ_Combined.png');
+outCombinedPath = fullfile(dataFolder, 'R20_All_FZ_IA-4_Combined.png');
 exportgraphics(figCombined, outCombinedPath, 'Resolution', 300);
 disp(['Saved combined plot: ', outCombinedPath]);
 
@@ -61,7 +61,7 @@ for i = 1:numel(FZValues)
     ylabel('Lateral Force FY (N)');
     title(sprintf('Lateral Force vs Slip Angle — FZ = %d N', FZVal));
 
-    outPath = fullfile(dataFolder, sprintf('R20_FZ_%d_Plot.png', FZVal));
+    outPath = fullfile(dataFolder, sprintf('R20_FZ_IA-4_%d_Plot.png', FZVal));
     exportgraphics(figSingle, outPath, 'Resolution', 300);
     disp(['Saved plot: ', outPath]);
 
