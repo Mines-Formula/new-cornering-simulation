@@ -151,6 +151,7 @@ P = add250_coeff(P, result_250.x)
 print(f"Calculated Coefficients after 250 load optimization: {P}")
 find_non_zeros(P)
 
+P[0] = 50
 df_no_camber = pd.read_csv("C:/Users/ajsau/Downloads/R20_combined_filtered.csv")
 FZ_no_camber = df_no_camber["NormalForce"]
 IA_no_camber = df_no_camber["InclinationAngle"]
@@ -179,4 +180,13 @@ print(f"Calculated Coefficients after all load optimization: {P}")
 find_non_zeros(P)
 
 #graph the result to view accuracy
+graphResult(P, L, IA_camber, alpha_camber, FZ_camber, FY_measured_camber)
+
+P[0] = 250
+P250 = np.array([P[1], P[2], P[5], P[12]])
+result_250 = least_squares(pacejka250, P250, args=(P, L, IA250, alpha250, FZ250, FY_measured250))
+P = add250_coeff(P, result_250.x)
+print(f"Calculated Coefficients after second 250 load optimization: {P}")
+find_non_zeros(P)
+P[0] = 50
 graphResult(P, L, IA_camber, alpha_camber, FZ_camber, FY_measured_camber)
