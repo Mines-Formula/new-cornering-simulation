@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import math
 import matplotlib.pyplot as plt
+import statsmodels.api as sm
 
 #using coefficients to calculate cornering force
 
@@ -30,8 +31,10 @@ def pacejka(P, L, IA, alpha, FZ):
 def graphResult(P, L, IA, alpha, FZ, FY_measured):
     #calculate FY
     FY_calculated = pacejka(P, L, IA, alpha, FZ)
-    plt.scatter(alpha, FY_measured, color="Blue")
-    plt.scatter(alpha, FY_calculated, color="Red")
+    smoothed_measured = sm.nonparametric.lowess(FY_measured, alpha, frac=.1)
+    smoothed_calculated = sm.nonparametric.lowess(FY_calculated, alpha, frac=.1)
+    plt.plot(smoothed_measured[:, 0], smoothed_measured[:, 1], color='blue', linewidth=2, label='Measured')
+    plt.plot(smoothed_calculated[:, 0], smoothed_calculated[:, 1], color='red', linewidth=2, label='Calculated')
     plt.show()
 
 def pacejka_camber(P_camber, P, L, IA, alpha, FZ, FY_measured): 
@@ -146,6 +149,7 @@ FZ250 = df250["NormalForce"]
 IA250 = df250["InclinationAngle"]
 alpha250 = df250["SlipAngle"]
 FY_measured250 = df250["LateralForce"]
+graphResult(P, L, IA250, alpha250, FZ250, FY_measured250)
 result_250 = least_squares(pacejka250, P250, args=(P, L, IA250, alpha250, FZ250, FY_measured250))
 P = add250_coeff(P, result_250.x)
 print(f"Calculated Coefficients after 250 load optimization: {P}")
