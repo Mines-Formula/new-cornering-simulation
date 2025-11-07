@@ -37,22 +37,6 @@ def graphResult(P, L, IA, alpha, FZ, FY_measured):
     plt.plot(smoothed_calculated[:, 0], smoothed_calculated[:, 1], color='red', linewidth=2, label='Calculated')
     plt.show()
 
-def pacejka_camber(P_camber, P, L, IA, alpha, FZ, FY_measured): 
-    dfz = (FZ - P[0]) / P[0]
-    Svy = FZ * (P[15] + P[16] * dfz + (P[17] + P_camber[3] * dfz) * IA) * L[7] * L[4]
-    Ey = (P[5] + P[6] * dfz) * (1 - (P[7] + P[8] * IA) * np.sign(alpha)) * L[6]
-    Shy = (P[12] + P[13] * dfz + P_camber[2] * IA) * L[5]
-    alphaY = alpha + Shy
-    Cy = P[1] * L[1]
-    Dy = FZ * (P[2] + P[3] * dfz) * (1 - P_camber[0] * IA**2) * L[0]
-    x1 = 2 * np.arctan(FZ / (P[10] * P[0] * L[2]))
-    x2 = P[9] * P[0] * np.sin(x1) * (1 - P_camber[1] * np.abs(IA)) * L[3] * L[4]
-    By = x2 / (Cy * Dy)
-
-    x3 = By * alphaY
-    FY_calculated = Dy * np.sin(Cy * np.arctan(x3 - Ey * (x3 - np.arctan(x3)))) + Svy
-    return rmse(FY_measured, FY_calculated)
-
 def pacejka250(P250, P, L, IA, alpha, FZ, FY_measured):
     dfz = (FZ - P[0]) / P[0]
     Svy = FZ * (P[15] + P[16] * dfz + (P[17] + P[18] * dfz) * IA) * L[7] * L[4]
@@ -63,21 +47,6 @@ def pacejka250(P250, P, L, IA, alpha, FZ, FY_measured):
     Dy = FZ * (P250[1] + P[3] * dfz) * (1 - P[4] * IA**2) * L[0]
     x1 = 2 * np.arctan(FZ / (P[10] * P[0] * L[2]))
     x2 = P[9] * P[0] * np.sin(x1) * (1 - P[11] * np.abs(IA)) * L[3] * L[4]
-    By = x2 / (Cy * Dy)
-    x3 = By * alphaY
-    FY_calculated = Dy * np.sin(Cy * np.arctan(x3 - Ey * (x3 - np.arctan(x3)))) + Svy
-    return rmse(FY_measured, FY_calculated)
-
-def pacejka_no_camber(P_no_camber, P, L, IA, alpha, FZ, FY_measured):
-    dfz = (FZ - P[0]) / P[0]
-    Svy = FZ * (P[15] + P[16] * dfz + (P[17] + P[18] * dfz) * IA) * L[7] * L[4]
-    Ey = (P[5] + P[6] * dfz) * (1 - (P[7] + P[8] * IA) * np.sign(alpha)) * L[6]
-    Shy = (P[12] + P[13] * dfz + P[14] * IA) * L[5]
-    alphaY = alpha + Shy
-    Cy = P[1] * L[1]
-    Dy = FZ * (P[2] + P_no_camber[0] * dfz) * (1 - P[4] * IA**2) * L[0]
-    x1 = 2 * np.arctan(FZ / (P_no_camber[2] * P[0] * L[2]))
-    x2 = P_no_camber[1] * P[0] * np.sin(x1) * (1 - P_no_camber[3] * np.abs(IA)) * L[3] * L[4]
     By = x2 / (Cy * Dy)
     x3 = By * alphaY
     FY_calculated = Dy * np.sin(Cy * np.arctan(x3 - Ey * (x3 - np.arctan(x3)))) + Svy
@@ -121,21 +90,6 @@ def add250_coeff(P, P250):
     P[1] = P250[0]
     P[2] = P250[1]
     P[5] = P250[2]
-    P[12] = P250[3]
-    return P
-
-def add_no_camber_coeff(P, P_no_camber):
-    P[3] = P_no_camber[0]
-    P[9] = P_no_camber[1]
-    P[10] = P_no_camber[2]
-    P[11] = P_no_camber[3]
-    return P
-
-def add_camber_coeff(P, P_camber):
-    P[4] = P_camber[0]
-    P[11] = P_camber[1]
-    P[14] = P_camber[2]
-    P[18] = P_camber[3]
     return P
 
 P = np.array([250, 1.4, 2.4, -0.25, 3, -0.1, -1.5, 0, 0, -30.5, 1.15, 1, 0, 0, -0.128, 0, 0, 0, 1.43])
@@ -143,7 +97,7 @@ print(f"Intial guess at coefficients: {P}")
 
 #load the data
 df250 = pd.read_csv("C:/Users/ajsau/Downloads/R20_FZ_250_filtered.csv")
-P250 = np.array([P[1], P[2], P[5], P[12]])
+P250 = np.array([P[1], P[2], P[5]])
 L = np.array([1, 1, 1, 1, 1, 1, 1, 1])
 FZ250 = df250["NormalForce"]
 IA250 = df250["InclinationAngle"]
@@ -154,43 +108,4 @@ result_250 = least_squares(pacejka250, P250, args=(P, L, IA250, alpha250, FZ250,
 P = add250_coeff(P, result_250.x)
 print(f"Calculated Coefficients after 250 load optimization: {P}")
 find_non_zeros(P)
-
-P[0] = 50
-df_no_camber = pd.read_csv("C:/Users/ajsau/Downloads/R20_combined_filtered.csv")
-FZ_no_camber = df_no_camber["NormalForce"]
-IA_no_camber = df_no_camber["InclinationAngle"]
-alpha_no_camber = df_no_camber["SlipAngle"]
-FY_measured_no_camber = df_no_camber["LateralForce"]
-P_no_camber = np.array([P[3], P[9], P[10], P[11]])
-graphResult(P, L, IA_no_camber, alpha_no_camber, FZ_no_camber, FY_measured_no_camber)
-result_no_camber = least_squares(pacejka_no_camber, P_no_camber, args=(P, L, IA_no_camber, alpha_no_camber, FZ_no_camber, FY_measured_no_camber))
-P = add_no_camber_coeff(P, result_no_camber.x)
-print(f"Calculated Coefficients after all load optimization: {P}")
-find_non_zeros(P)
-graphResult(P, L, IA_no_camber, alpha_no_camber, FZ_no_camber, FY_measured_no_camber)
-
-df_camber2 = pd.read_csv("C:/Users/ajsau/Downloads/R20_IA-2_combined_filtered.csv")
-df_camber4 = pd.read_csv("C:/Users/ajsau/Downloads/R20_IA-4_combined_filtered.csv")
-frames = [df_no_camber, df_camber2, df_camber4]
-df_camber = pd.concat(frames, axis=0).reset_index(drop=True)
-FZ_camber = df_camber["NormalForce"]
-IA_camber = df_camber["InclinationAngle"]
-alpha_camber = df_camber["SlipAngle"]
-FY_measured_camber = df_camber["LateralForce"]
-P_camber = np.array([P[4], P[11], P[14], P[18]])
-result_camber = least_squares(pacejka_camber, P_camber, args=(P, L, IA_camber, alpha_camber, FZ_camber, FY_measured_camber))
-P = add_camber_coeff(P, result_camber.x)
-print(f"Calculated Coefficients after all load optimization: {P}")
-find_non_zeros(P)
-
-#graph the result to view accuracy
-graphResult(P, L, IA_camber, alpha_camber, FZ_camber, FY_measured_camber)
-
-P[0] = 250
-P250 = np.array([P[1], P[2], P[5], P[12]])
-result_250 = least_squares(pacejka250, P250, args=(P, L, IA250, alpha250, FZ250, FY_measured250))
-P = add250_coeff(P, result_250.x)
-print(f"Calculated Coefficients after 250 load optimization: {P}")
-find_non_zeros(P)
-P[0] = 50
-graphResult(P, L, IA_camber, alpha_camber, FZ_camber, FY_measured_camber)
+graphResult(P, L, IA250, alpha250, FZ250, FY_measured250)
