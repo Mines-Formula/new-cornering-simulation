@@ -1,6 +1,9 @@
 clc, clearvars, close all;
 
-data = readtable('R20_combined_filtered.csv');
+data1 = readtable('R20_combined_filtered.csv');
+data2 = readtable('R20_IA-2_combined_filtered.csv');
+data3 = readtable('R20_IA-4_combined_filtered.csv');
+data = [data1; data2; data3];
 
 % Column meanings
 IA = data{:,3};            % Inclination angle (held constant at 0)
@@ -9,17 +12,17 @@ alpha = data{:,5};         % Slip angle (deg)
 FYExperimental = data{:,7};        % Experimental lateral force
 source = data{:,9};        % Source file name
 
-bins = [50, 100, 150, 200, 250];
+FZBins = [50, 100, 150, 200, 250];
 FYAll = [];
 FZAll = [];
 alphaAll = [];
 IAAll = [];
 
-for i = 1:numel(bins)
-    tag = sprintf('R20_FZ_%d_filtered', bins(i));
+for i = 1:numel(FZBins)
+    tag = sprintf('R20_FZ_%d_filtered', FZBins(i));
     idx = contains(source, tag);
     FYAll = [FYAll; FYExperimental(idx)];
-    FZAll = [FZAll; bins(i) * ones(sum(idx),1)];
+    FZAll = [FZAll; FZBins(i) * ones(sum(idx),1)];
     alphaAll = [alphaAll; alpha(idx)];
     IAAll = [IAAll; IA(idx)];
 end
@@ -36,12 +39,13 @@ options = optimoptions('lsqnonlin', 'Display', 'iter', 'MaxFunctionEvaluations',
 lb = -Inf(1,19);
 ub = Inf(1,19);
 % Fix PEY2, PEY3, PEY4, PHY2, PVY2 to zero
-fixedIdx = [7, 8, 9, 14, 17]; % Parameter positions to fix
+fixedIdx = [8, 9, 13, 14, 16, 17, 18]; % Parameter positions to fix
 fixed2Idx = [1];
 lb(fixedIdx) = 0;
 ub(fixedIdx) = 0;
 lb(fixed2Idx) = 250;
 ub(fixed2Idx) = 250;
+
 
 POptimization = lsqnonlin(objFun, P0, lb, ub, options);
 disp('Optimized Parameters:')
@@ -52,29 +56,29 @@ rmse = sqrt(mean((FYAll - FYPredicted).^2));
 fprintf('Overall RMSE: %.3f\n', rmse);
 
 
-disp('Available bins: [50, 100, 150, 200, 250]');
-plot_choice = input('Enter FZ bin to plot (or "all" for all bins): ', 's');
+disp('Available FZBins: [50, 100, 150, 200, 250]');
+plot_choice = input('Enter FZ bin to plot (or "all" for all FZBins): ', 's');
 
 figure; hold on; grid on;
-colors = lines(numel(bins));
+colors = lines(numel(FZBins));
 
 if strcmpi(plot_choice, 'all')
-    % Plot all bins together
-    for i = 1:numel(bins)
-        idx = FZAll == bins(i);
-        scatter(rad2deg(alphaAll(idx)), FYAll(idx), 2, colors(i,:), 'filled', 'DisplayName', sprintf('Exp FZ=%d', bins(i)));
+    % Plot all FZBins together
+    for i = 1:numel(FZBins)
+        idx = FZAll == FZBins(i);
+        scatter(rad2deg(alphaAll(idx)), FYAll(idx), 2, colors(i,:), 'filled', 'DisplayName', sprintf('Exp FZ=%d', FZBins(i)));
 
         [alphaSort, ord] = sort(alphaAll(idx));
         FYFit = pacejka(POptimization, L, FZAll(idx), IAAll(idx), alphaSort);
-        plot(rad2deg(alphaSort), FYFit, 'Color', colors(i,:), 'LineWidth', 1.5, 'DisplayName', sprintf('Fit FZ=%d', bins(i)));
+        plot(rad2deg(alphaSort), FYFit, 'Color', colors(i,:), 'LineWidth', 1.5, 'DisplayName', sprintf('Fit FZ=%d', FZBins(i)));
     end
     title(sprintf('Pacejka Fit (All Bins) - RMSE = %.2f', rmse));
 
 else
     % Plot only the selected bin
     binValue = str2double(plot_choice);
-    if isnan(binValue) || ~ismember(binValue, bins)
-        error('Invalid bin selection. Must be one of: %s', num2str(bins));
+    if isnan(binValue) || ~ismember(binValue, FZBins)
+        error('Invalid bin selection. Must be one of: %s', num2str(FZBins));
     end
 
     idx = FZAll == binValue;
@@ -102,4 +106,3 @@ function err = FYExperimental_all(P, L, FZ, IA, alpha, FYExperimental)
     FYModel = pacejka(P, L, FZ, IA, alpha);
     err = FYModel - FYExperimental;   % residuals for lsqnonlin
 end
-
