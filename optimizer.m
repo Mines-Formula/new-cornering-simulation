@@ -1,13 +1,13 @@
 clc; clear; close all;
 
-data = readtable('R20_combined_filtered.csv');
+files = { 'R20_combined_filtered.csv', 'R20_IA-2_combined_filtered.csv', 'R20_IA-4_combined_filtered.csv'};
 
-% Column meanings
-IA = data{:,3};            % Inclination angle (held constant at 0)
-FZRaw = data{:,4};        % Normal force
-alpha = data{:,5};         % Slip angle (deg)
-FYExperimental = data{:,7};        % Experimental lateral force
-source = data{:,9};        % Source file name
+% % Column meanings
+% IA = data{:,3};            % Inclination angle (held constant at 0)
+% FZRaw = data{:,4};        % Normal force
+% alpha = data{:,5};         % Slip angle (deg)
+% FYExperimental = data{:,7};        % Experimental lateral force
+% source = data{:,9};        % Source file name
 
 bins = [50, 100, 150, 200, 250];
 FYAll = [];
