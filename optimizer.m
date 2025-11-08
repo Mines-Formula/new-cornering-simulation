@@ -62,36 +62,54 @@ fprintf('Overall RMSE: %.3f\n', rmse);
 
 
 IAValues = [0, 2, 4];
-colors = lines(numel(FZBins));
+FZPlot = [50, 150, 250]; % FZ levels to show
+
+% Generate 9 unique colors (one per combination)
+colors = lines(numel(IAValues) * numel(FZPlot));
+
+figure;
+hold on;
+grid on;
+
+c = 1; % color counter
 
 for k = 1:numel(IAValues)
-    figure;
-    hold on;
-    grid on;
-
     thisIA = IAValues(k);
     idxIA = (IAAll == thisIA);
 
-    for i = 1:numel(FZBins)
-        idx = idxIA & (FZAll == FZBins(i));
-        scatter(rad2deg(alphaAll(idx)), FYAll(idx), 2, colors(i,:), 'filled', 'DisplayName', sprintf('Exp FZ=%d', FZBins(i)));
+    for i = 1:numel(FZPlot)
+        idx = idxIA & (FZAll == FZPlot(i));
 
+        % Skip if no data found for this combination
+        if ~any(idx), continue; end
+
+        % Scatter experimental data
+        scatter(rad2deg(alphaAll(idx)), FYAll(idx), 6, ...
+            'MarkerEdgeColor', colors(c,:), ...
+            'MarkerFaceColor', colors(c,:), ...
+            'MarkerFaceAlpha', 0.25, ...
+            'DisplayName', sprintf('Exp FZ=%d lb, IA=%d°', FZPlot(i), thisIA));
+
+        % Fit line
         [alphaSort, ord] = sort(alphaAll(idx));
         FYFit = pacejka(POptimization, L, FZAll(idx), IAAll(idx), alphaSort);
-        plot(rad2deg(alphaSort), FYFit, 'Color', colors(i,:), 'LineWidth', 1.5, 'DisplayName', sprintf('Fit FZ=%d', FZBins(i)));
+
+        plot(rad2deg(alphaSort), FYFit, ...
+            'Color', colors(c,:), ...
+            'LineWidth', 1.8, ...
+            'DisplayName', sprintf('Fit FZ=%d lb, IA=%d°', FZPlot(i), thisIA));
+
+        c = c + 1; % advance color index
     end
-
-    title(sprintf('Pacejka Fit - IA = %d° (RMSE = %.2f)', thisIA, rmse));
-    xlabel('Slip Angle [deg]');
-    ylabel('Lateral Force FY');
-    legend('Location', 'best');
-
 end
 
-
+title(sprintf('Pacejka Fit — 50, 150, 250 lb Across Camber Angles\nOverall RMSE = %.2f', rmse));
 xlabel('Slip Angle [deg]');
 ylabel('Lateral Force FY');
-legend('Location', 'best');
+legend('Location', 'bestoutside');
+hold off;
+
+
 
 fprintf('Overall RMSE: %.3f\n', rmse);
 
