@@ -19,7 +19,7 @@ alphaAll = [];
 IAAll = [];
 
 for i = 1:numel(FZBins)
-    tag = sprintf('R20_FZ_%d_filtered', FZBins(i));
+    tag = sprintf('R20_FZ_%d_IA-2_filtered', FZBins(i));
     idx = contains(source, tag);
     FYAll = [FYAll; FYExperimental(idx)];
     FZAll = [FZAll; FZBins(i) * ones(sum(idx),1)];
@@ -88,7 +88,7 @@ else
     FYFit = pacejka(POptimization, L, FZAll(idx), IAAll(idx), alphaSort);
     plot(rad2deg(alphaSort), FYFit, 'r', 'LineWidth', 1.5, 'DisplayName', sprintf('Fit FZ=%d', binValue));
     
-    title(sprintf('Pacejka Fit (FZ = %d N) - RMSE = %.2f', binValue, rmse));
+    title(sprintf('Pacejka Fit - IA = 2 (FZ = %d N) - RMSE = %.2f', binValue, rmse));
 end
 
 xlabel('Slip Angle [deg]');
