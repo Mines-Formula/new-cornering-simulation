@@ -35,7 +35,10 @@ options = optimoptions('lsqnonlin', 'Display', 'iter', 'MaxFunctionEvaluations',
 
 lb = -Inf(1,19);
 ub = Inf(1,19);
-
+% Fix PEY2, PEY3, PEY4, PHY2, PVY2 to zero
+fixedIdx = [7, 8, 9, 14, 17]; % Parameter positions to fix
+lb(fixedIdx) = 0;
+ub(fixedIdx) = 0;
 
 POptimization = lsqnonlin(objFun, P0, lb, ub, options);
 disp('Optimized Parameters:')
