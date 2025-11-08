@@ -31,6 +31,7 @@ def pacejka(P, L, IA, alpha, FZ):
 def graphResult(P, L, IA, alpha, FZ, FY_measured):
     #calculate FY
     FY_calculated = pacejka(P, L, IA, alpha, FZ)
+    alpha = alpha * 180/math.pi
     smoothed_measured = sm.nonparametric.lowess(FY_measured, alpha, frac=.1)
     smoothed_calculated = sm.nonparametric.lowess(FY_calculated, alpha, frac=.1)
     plt.plot(smoothed_measured[:, 0], smoothed_measured[:, 1], color='blue', linewidth=2, label='Measured')
@@ -103,8 +104,9 @@ FZ250 = df250["NormalForce"]
 IA250 = df250["InclinationAngle"]
 alpha250 = df250["SlipAngle"]
 FY_measured250 = df250["LateralForce"]
+alpha250 = alpha250 * math.pi/180
 graphResult(P, L, IA250, alpha250, FZ250, FY_measured250)
-result_250 = least_squares(pacejka250, P250, args=(P, L, IA250, alpha250, FZ250, FY_measured250))
+result_250 = least_squares(pacejka250, P250, args=(P, L, IA250, alpha250*math.pi/180, FZ250, FY_measured250))
 P = add250_coeff(P, result_250.x)
 print(f"Calculated Coefficients after 250 load optimization: {P}")
 find_non_zeros(P)
