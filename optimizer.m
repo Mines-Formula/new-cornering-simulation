@@ -1,9 +1,9 @@
 clc, clearvars, close all;
 
-data1 = readtable('R20_combined_filtered.csv');
+data0 = readtable('R20_combined_filtered.csv');
 data2 = readtable('R20_IA-2_combined_filtered.csv');
-data3 = readtable('R20_IA-4_combined_filtered.csv');
-data = [data1; data2; data3];
+data4 = readtable('R20_IA-4_combined_filtered.csv');
+data = [data0; data2; data4];
 
 % Column meanings
 IA = data{:,3};            % Inclination angle (held constant at 0)
@@ -39,12 +39,11 @@ options = optimoptions('lsqnonlin', 'Display', 'iter', 'MaxFunctionEvaluations',
 lb = -Inf(1,19);
 ub = Inf(1,19);
 % Fix PEY2, PEY3, PEY4, PHY2, PVY2 to zero
-fixedIdx = [8, 9, 13, 14, 16, 17, 18]; % Parameter positions to fix
-fixed2Idx = [1];
-lb(fixedIdx) = 0;
-ub(fixedIdx) = 0;
-lb(fixed2Idx) = 250;
-ub(fixed2Idx) = 250;
+fixedIdx = [18]; % Parameter positions to fix
+lb(1) = 250;
+ub(1) = 250;
+lb(fixedIdx) = P0(fixedIdx);
+ub(fixedIdx) = P0(fixedIdx);
 
 
 POptimization = lsqnonlin(objFun, P0, lb, ub, options);
@@ -56,10 +55,7 @@ rmse = sqrt(mean((FYAll - FYPredicted).^2));
 fprintf('Overall RMSE: %.3f\n', rmse);
 
 
-disp('Available FZBins: [50, 100, 150, 200, 250]');
-plot_choice = input('Enter FZ bin to plot (or "all" for all FZBins): ', 's');
-
-figure; hold on; grid on;
+IAValues = [0, 2, 4];
 colors = lines(numel(FZBins));
 
 if strcmpi(plot_choice, 'all')
