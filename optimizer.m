@@ -44,17 +44,22 @@ dfz = (FZAll - FZ0) ./ FZ0;
 P0 = [250, 1.4, 2.4, -0.25, 3, -0.1, -1.5, 0, 0, -30.5, 1.15, 1, 0, 0, -0.128, 0, 0, 0, 1.43];
 L = ones(1,8);
 
-objFun = @(P) FYExperimental_all(P, L, FZAll, IAAll, alphaAll, FYAll);
-
 options = optimoptions('lsqnonlin', 'Display', 'iter', 'MaxFunctionEvaluations', 20000, 'TolFun', 1e-8, 'TolX', 1e-8);
 
 lb = [50,  0.5,  0.5,  -1,   0,  -5, -5, -5, -5, -100,  0.1, -5, -1, -1, -1, -1, -1, -1, -1];
 ub = [500, 3,    3,     1,  10,   5,  5,  5,  5,  100,  3,   5,   1,  1,  1,  1,  1,  1,  1];
 
+objFun = @(P) FYExperimental_all(P, L, FZAll, IAAll, alphaAll, FYAll);
 
+options = optimoptions('lsqnonlin', 'Display', 'iter', 'MaxFunctionEvaluations', 30000, 'TolFun', 1e-8, 'TolX', 1e-8);
+
+fprintf("\nRunning Optimizations \n");
 POptimization = lsqnonlin(objFun, P0, lb, ub, options);
+
 disp('Optimized Parameters:')
 disp(POptimization)
+
+
 
 FYPredicted = pacejka(POptimization, L, FZAll, IAAll, alphaAll);
 rmse = sqrt(mean((FYAll - FYPredicted).^2));
