@@ -53,57 +53,44 @@ disp('Available bins: [50, 100, 150, 200, 250]');
 plot_choice = input('Enter FZ bin to plot (or "all" for all bins): ', 's');
 
 figure; hold on; grid on;
-colors = lines(numel(bins));         % base colors for experimental data
-fitColors = brighten(colors, -0.4);  % darker shades for the fitted lines
+colors = lines(numel(bins));
 
 if strcmpi(plot_choice, 'all')
     % Plot all bins together
     for i = 1:numel(bins)
         idx = FZAll == bins(i);
-
-        % Experimental data (scatter)
-        scatter(rad2deg(alphaAll(idx)), FYAll(idx), 12, ...
-            'MarkerFaceColor', colors(i,:), ...
-            'MarkerEdgeColor', 'none', ...
+        scatter(rad2deg(alphaAll(idx)), FYAll(idx), 10, colors(i,:), 'filled', ...
             'DisplayName', sprintf('Exp FZ=%d', bins(i)));
 
-        % Fit line (darker color)
         [alphaSort, ord] = sort(alphaAll(idx));
         FYFit = pacejka(POptimization, L, FZAll(idx), IAAll(idx), alphaSort);
-        plot(rad2deg(alphaSort), FYFit, 'Color', fitColors(i,:), 'LineWidth', 2, ...
+        plot(rad2deg(alphaSort), FYFit, 'Color', colors(i,:), 'LineWidth', 1.5, ...
             'DisplayName', sprintf('Fit FZ=%d', bins(i)));
     end
     title(sprintf('Pacejka Fit (All Bins) - RMSE = %.2f', rmse));
 
 else
-    % Plot only selected bin
+    % Plot only the selected bin
     binValue = str2double(plot_choice);
     if isnan(binValue) || ~ismember(binValue, bins)
         error('Invalid bin selection. Must be one of: %s', num2str(bins));
     end
 
     idx = FZAll == binValue;
-    colorIdx = find(bins == binValue);
+    scatter(rad2deg(alphaAll(idx)), FYAll(idx), 5, 'filled', ...
+        'DisplayName', sprintf('Exp FZ=%d', binValue), 'MarkerFaceColor', [0.3 0.3 0.9]);
 
-    % Experimental points
-    scatter(rad2deg(alphaAll(idx)), FYAll(idx), 20, ...
-        'MarkerFaceColor', colors(colorIdx,:), ...
-        'MarkerEdgeColor', 'none', ...
-        'DisplayName', sprintf('Exp FZ=%d', binValue));
-
-    % Fit line
     [alphaSort, ord] = sort(alphaAll(idx));
     FYFit = pacejka(POptimization, L, FZAll(idx), IAAll(idx), alphaSort);
-    plot(rad2deg(alphaSort), FYFit, 'Color', fitColors(colorIdx,:), 'LineWidth', 2.5, ...
+    plot(rad2deg(alphaSort), FYFit, 'r', 'LineWidth', 2, ...
         'DisplayName', sprintf('Fit FZ=%d', binValue));
-
+    
     title(sprintf('Pacejka Fit (FZ = %d N) - RMSE = %.2f', binValue, rmse));
 end
 
 xlabel('Slip Angle [deg]');
 ylabel('Lateral Force FY [N]');
 legend('Location', 'best');
-
 
 %terminal output
 disp(' ')
