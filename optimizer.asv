@@ -19,8 +19,14 @@ alphaAll = [];
 IAAll = [];
 
 for i = 1:numel(FZBins)
-    tag = sprintf('R20_FZ_%d_filtered', FZBins(i));
-    idx = contains(source, tag);
+    baseTag = sprintf('R20_FZ_%d', FZBins(i));
+    
+    % Match any of these forms:
+    % R20_FZ_*_filtered
+    % R20_FZ_*_IA-2_filtered
+    % R20_FZ_*_IA-4_filtered
+    idx = contains(source, [baseTag '_filtered']) | contains(source, [baseTag '_IA-2_filtered']) | contains(source, [baseTag '_IA-4_filtered']);
+    
     FYAll = [FYAll; FYExperimental(idx)];
     FZAll = [FZAll; FZBins(i) * ones(sum(idx),1)];
     alphaAll = [alphaAll; alpha(idx)];
@@ -30,6 +36,7 @@ end
 alphaAll = deg2rad(alphaAll);
 
 P0 = [250, 1.4, 2.4, -0.25, 3, -0.1, -1.5, 0, 0, -30.5, 1.15, 1, 0, 0, -0.128, 0, 0, 0, 1.43];
+P1 = [250, 1.59646, 2.36421, -0.174142, 0.00296546, 0.291861, -0.485933, -0.236369, 0.194122, -30.8375, 1.3082, 0.00798175, -0.00123245, -0.00103767, -0.0011476, -0.0283671, 0, 0.0292794, -0.00139734]
 L = ones(1,8);
 
 objFun = @(P) FYExperimental_all(P, L, FZAll, IAAll, alphaAll, FYAll);
@@ -39,7 +46,7 @@ options = optimoptions('lsqnonlin', 'Display', 'iter', 'MaxFunctionEvaluations',
 lb = -Inf(1,19);
 ub = Inf(1,19);
 % Fix PEY2, PEY3, PEY4, PHY2, PVY2 to zero
-fixedIdx = [18]; % Parameter positions to fix
+fixedIdx = [17]; % Parameter positions to fix
 lb(1) = 250;
 ub(1) = 250;
 lb(fixedIdx) = P0(fixedIdx);
@@ -55,38 +62,33 @@ rmse = sqrt(mean((FYAll - FYPredicted).^2));
 fprintf('Overall RMSE: %.3f\n', rmse);
 
 
-
-figure; hold on; grid on;
+IAValues = [0, 2, 4];
 colors = lines(numel(FZBins));
 
-if strcmpi(plot_choice, 'all')
-    % Plot all FZBins together
+for k = 1:numel(IAValues)
+    figure;
+    hold on;
+    grid on;
+
+    thisIA = IAValues(k);
+    idxIA = (IAAll == thisIA);
+
     for i = 1:numel(FZBins)
-        idx = FZAll == FZBins(i);
+        idx = idxIA & (FZAll == FZBins(i));
         scatter(rad2deg(alphaAll(idx)), FYAll(idx), 2, colors(i,:), 'filled', 'DisplayName', sprintf('Exp FZ=%d', FZBins(i)));
 
         [alphaSort, ord] = sort(alphaAll(idx));
         FYFit = pacejka(POptimization, L, FZAll(idx), IAAll(idx), alphaSort);
         plot(rad2deg(alphaSort), FYFit, 'Color', colors(i,:), 'LineWidth', 1.5, 'DisplayName', sprintf('Fit FZ=%d', FZBins(i)));
     end
-    title(sprintf('Pacejka Fit (All Bins) - RMSE = %.2f', rmse));
 
-else
-    % Plot only the selected bin
-    binValue = str2double(plot_choice);
-    if isnan(binValue) || ~ismember(binValue, FZBins)
-        error('Invalid bin selection. Must be one of: %s', num2str(FZBins));
-    end
+    title(sprintf('Pacejka Fit - IA = %d° (RMSE = %.2f)', thisIA, rmse));
+    xlabel('Slip Angle [deg]');
+    ylabel('Lateral Force FY');
+    legend('Location', 'best');
 
-    idx = FZAll == binValue;
-    scatter(rad2deg(alphaAll(idx)), FYAll(idx), 2, 'filled', 'DisplayName', sprintf('Exp FZ=%d', binValue), 'MarkerFaceColor', [0.3 0.3 0.9]);
-
-    [alphaSort, ord] = sort(alphaAll(idx));
-    FYFit = pacejka(POptimization, L, FZAll(idx), IAAll(idx), alphaSort);
-    plot(rad2deg(alphaSort), FYFit, 'r', 'LineWidth', 1.5, 'DisplayName', sprintf('Fit FZ=%d', binValue));
-    
-    title(sprintf('Pacejka Fit (FZ = %d N) - RMSE = %.2f', binValue, rmse));
 end
+
 
 xlabel('Slip Angle [deg]');
 ylabel('Lateral Force FY');
