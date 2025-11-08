@@ -1,8 +1,8 @@
 clc, clearvars, close all;
 
-data0 = readtable('R20_combined_filtered.csv');
-data2 = readtable('R20_IA-2_combined_filtered.csv');
-data4 = readtable('R20_IA-4_combined_filtered.csv');
+data0 = readtable('LC0_combined_filtered.csv');
+data2 = readtable('LC0_IA-2_combined_filtered.csv');
+data4 = readtable('LC0_IA-4_combined_filtered.csv');
 data = [data0; data2; data4];
 
 % Column meanings
@@ -19,7 +19,7 @@ alphaAll = [];
 IAAll = [];
 
 for i = 1:numel(FZBins)
-    baseTag = sprintf('R20_FZ_%d', FZBins(i));
+    baseTag = sprintf('LC0_FZ_%d', FZBins(i));
     
     % Match any of these forms:
     % R20_FZ_*_filtered
@@ -35,7 +35,7 @@ end
 
 alphaAll = deg2rad(alphaAll);
 
-P0 = [250, 1.4, 2.4, -0.25, 3, -0.1, -1.5, 0, 0, -30.5, 1.15, 1, 0, 0, -0.128, 0, 0, 0, 1.43];
+P0 = [250, 0.0266271, 57.5236, -11.8228, 635.453, -7.76734, 2.30332, -0.0420216, -27140.1, -23.233, 2.1507, 0.0578158, -0.00171219, -0.000189223, -0.0401304, -0.0669291, 0, -0.540476, 0.125077];
 L = ones(1,8);
 
 objFun = @(P) FYExperimental_all(P, L, FZAll, IAAll, alphaAll, FYAll);
