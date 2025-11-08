@@ -2,7 +2,7 @@ clc, clearvars, clear all
 
 dataFolder = '/Users/Blanchards1/Documents/FormulaSim/Output/LC0Round18';
 
-csvFiles = dir(fullfile(dataFolder, "LC0_FZ_*_Round18.csv"));
+csvFiles = dir(fullfile(dataFolder, "LC0_FZ_*_Round18_IA_2.csv"));
 
 for i = 1:numel(csvFiles)
     curFile = fullfile(csvFiles(i).folder, csvFiles(i).name);
@@ -17,7 +17,7 @@ for i = 1:numel(csvFiles)
     table.InclinationAngle = floor(table.InclinationAngle * 10) / 10;
 
     table = sortrows(table, ["RoadSpeed", "TirePressure", "InclinationAngle"]);
-    filteredTable = table(table.InclinationAngle == 0 & table.RoadSpeed == 25 & table.TirePressure == 12, :);
+    filteredTable = table(table.InclinationAngle == 2 & table.RoadSpeed == 25 & table.TirePressure == 12, :);
 
     filteredTable = sortrows(filteredTable, "ElapsedTime");
 

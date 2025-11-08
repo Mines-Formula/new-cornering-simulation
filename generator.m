@@ -3,12 +3,12 @@ clc, clearvars, clear all
 dataFile = '/Users/Blanchards1/Documents/Round9/A1965run18.mat';
 outputFolder = '/Users/Blanchards1/Documents/FormulaSim/Output/LC0Round18';
 
-idxRange50 = 3767:4985;
-idxRange100 = 6330:7477;
-idxRange150 = 2568:3737;
-idxRange200 = 1300:2480;
-idxRange250a = 1:1235;
-idxRange250b = 5014:6233;
+idxRange50 = 10010:11225;
+idxRange100 = 12501:13726;
+idxRange150 = 8761:9979;
+idxRange200 = 7510:8732;
+idxRange250a = 11253:12474;
+%idxRange250b = 5014:6233;
 
 curFile = load(dataFile);
 disp("Loaded " + dataFile);
@@ -35,11 +35,11 @@ subTables.FZ50 = runTable(idxRange50, :);
 subTables.FZ100 = runTable(idxRange100, :);
 subTables.FZ150 = runTable(idxRange150, :);
 subTables.FZ200 = runTable(idxRange200, :);
-subTables.FZ250 = [runTable(idxRange250a, :); runTable(idxRange250b, :)];
+subTables.FZ250 = runTable(idxRange250a, :);
 
 outNames = fieldnames(subTables);
 for i = 1:numel(outNames)
-    fname = fullfile(outputFolder, sprintf("LC0_FZ_%s_Round18.csv", outNames{i}(3:end)));
+    fname = fullfile(outputFolder, sprintf("LC0_FZ_%s_Round18_IA_2.csv", outNames{i}(3:end)));
     writetable(subTables.(outNames{i}), fname);
     disp("Saved: " + fname);
 end
