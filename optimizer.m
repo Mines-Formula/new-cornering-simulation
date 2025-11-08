@@ -1,4 +1,4 @@
-clc; clear; close all;
+clc, clearvars, close all;
 
 data = readtable('R20_combined_filtered.csv');
 
@@ -37,8 +37,11 @@ lb = -Inf(1,19);
 ub = Inf(1,19);
 % Fix PEY2, PEY3, PEY4, PHY2, PVY2 to zero
 fixedIdx = [7, 8, 9, 14, 17]; % Parameter positions to fix
+fixed2Idx = [1];
 lb(fixedIdx) = 0;
 ub(fixedIdx) = 0;
+lb(fixed2Idx) = 250;
+ub(fixed2Idx) = 250;
 
 POptimization = lsqnonlin(objFun, P0, lb, ub, options);
 disp('Optimized Parameters:')
