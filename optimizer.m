@@ -1,6 +1,9 @@
 clc; clear; close all;
 
-data = readtable('R20_combined_filtered.csv');
+data0 = readtable('R20_combined_filtered.csv');
+data2 = readtable('R20_IA-2_combined_filtered.csv');
+data4 = readtable('R20_IA-4_combined_filtered.csv');
+data = [data0;data2;data4];
 
 % Column meanings
 IA = data{:,3};            % Inclination angle (held constant at 0)
@@ -15,9 +18,12 @@ FZAll = [];
 alphaAll = [];
 IAAll = [];
 
+
 for i = 1:numel(bins)
+    tag2 = sprintf('R20_FZ_%d_IA-2_filtered', bins(i));
+    tag4 = sprintf('R20_FZ_%d_IA-4_filtered', bins(i));
     tag = sprintf('R20_FZ_%d_filtered', bins(i));
-    idx = contains(source, tag);
+    idx = contains(source, tag) | contains(source, tag2) | contains(source, tag4);
     FYAll = [FYAll; FYExperimental(idx)];
     FZAll = [FZAll; bins(i) * ones(sum(idx),1)];
     alphaAll = [alphaAll; alpha(idx)];
@@ -26,7 +32,7 @@ end
 
 alphaAll = deg2rad(alphaAll);
 
-P0 = [250, 1.4, 2.4, -0.25, 3, -0.1, -1.5, 0, 0, -30.5, 1.15, 1, 0, 0, -0.128, 0, 0, 0, 1.43];
+P0 = [250, 1.53458, 2.366, -0.202526, 3, 0.214146, -0.825856, 0, 0, -30.6211, 1.25718, 1, 0, 0, -0.128, 0, 0, 0, 1.43];
 L = ones(1,8);
 
 objFun = @(P) FYExperimental_all(P, L, FZAll, IAAll, alphaAll, FYAll);
@@ -36,9 +42,27 @@ options = optimoptions('lsqnonlin', 'Display', 'iter', 'MaxFunctionEvaluations',
 lb = -Inf(1,19);
 ub = Inf(1,19);
 % Fix PEY2, PEY3, PEY4, PHY2, PVY2 to zero
-fixedIdx = [7, 8, 9, 14, 17]; % Parameter positions to fix
+fixedIdx = [8, 9, 13, 14, 16, 17, 18]; % Parameter positions to fix
 lb(fixedIdx) = 0;
 ub(fixedIdx) = 0;
+lb(1) = 250;
+ub(1) = 250;
+lb(2) = P0(2);
+ub(2) = P0(2);
+lb(3) = P0(3);
+ub(3) = P0(3);
+lb(4) = P0(4);
+ub(4) = P0(4);
+lb(6) = P0(6);
+ub(6) = P0(6);
+lb(7) = P0(7);
+ub(7) = P0(7);
+lb(10) = P0(10);
+ub(10) = P0(10);
+lb(11) = P0(11);
+ub(11) = P0(11);
+%lb(12) = P0(12);
+%ub(12) = P0(12);
 
 POptimization = lsqnonlin(objFun, P0, lb, ub, options);
 disp('Optimized Parameters:')
