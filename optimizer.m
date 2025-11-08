@@ -15,16 +15,31 @@ FZAll = [];
 alphaAll = [];
 IAAll = [];
 
-for i = 1:numel(bins)
-    tag = sprintf('R20_FZ_%d_filtered', bins(i));
-    idx = contains(source, tag);
-    FYAll = [FYAll; FYExperimental(idx)];
-    FZAll = [FZAll; bins(i) * ones(sum(idx),1)];
-    alphaAll = [alphaAll; alpha(idx)];
-    IAAll = [IAAll; IA(idx)];
+for f = 1:length(files)
+    fprintf('Loading %s ...\n', files{f});
+    data = readtable(files{f});
+    % Column meanings
+    IA = data{:,3};            % Inclination angle (held constant at 0)
+    FZRaw = data{:,4};        % Normal force
+    alpha = data{:,5};         % Slip angle (deg)
+    FYExperimental = data{:,7};        % Experimental lateral force
+    source = data{:,9}; 
+
+    for i = 1:numel(bins)
+        tag = sprintf('R20_FZ_%d_filtered', bins(i));
+        idx = contains(source, tag);
+        FYAll = [FYAll; FYExperimental(idx)];
+        FZAll = [FZAll; bins(i) * ones(sum(idx),1)];
+        alphaAll = [alphaAll; alpha(idx)];
+        IAAll = [IAAll; IA(idx)];
+    end
+
 end
 
 alphaAll = deg2rad(alphaAll);
+
+FZ0 = mean(bins);
+dfz = (FZAll - FZ0) ./ FZ0;
 
 P0 = [250, 1.4, 2.4, -0.25, 3, -0.1, -1.5, 0, 0, -30.5, 1.15, 1, 0, 0, -0.128, 0, 0, 0, 1.43];
 L = ones(1,8);
@@ -33,8 +48,9 @@ objFun = @(P) FYExperimental_all(P, L, FZAll, IAAll, alphaAll, FYAll);
 
 options = optimoptions('lsqnonlin', 'Display', 'iter', 'MaxFunctionEvaluations', 20000, 'TolFun', 1e-8, 'TolX', 1e-8);
 
-lb = -Inf(1,19);
-ub = Inf(1,19);
+lb = [50,  0.5,  0.5,  -1,   0,  -5, -5, -5, -5, -100,  0.1, -5, -1, -1, -1, -1, -1, -1, -1];
+ub = [500, 3,    3,     1,  10,   5,  5,  5,  5,  100,  3,   5,   1,  1,  1,  1,  1,  1,  1];
+
 
 POptimization = lsqnonlin(objFun, P0, lb, ub, options);
 disp('Optimized Parameters:')
