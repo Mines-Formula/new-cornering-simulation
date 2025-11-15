@@ -3,7 +3,7 @@ clc, clearvars, close all;
 data0 = readtable('LC0_combined_filtered.csv');
 data2 = readtable('LC0_IA-2_combined_filtered.csv');
 data4 = readtable('LC0_IA-4_combined_filtered.csv');
-data = [data2; data4];
+data = [data0; data2];
 
 % Column meanings
 IA = data{:,3};            % Inclination angle (held constant at 0)
@@ -25,6 +25,7 @@ for i = 1:numel(FZBins)
     % R20_FZ_*_filtered
     % R20_FZ_*_IA-2_filtered
     % R20_FZ_*_IA-4_filtered
+    % Also works for LC0 just match format for new tire
     idx = contains(source, [baseTag '_filtered']) | contains(source, [baseTag '_IA-2_filtered']) | contains(source, [baseTag '_IA-4_filtered']);
     
     FYAll = [FYAll; FYExperimental(idx)];
@@ -106,14 +107,19 @@ fprintf('%g]\n', POptimization(end));
 
 % function err = FYExperimental_all(P, L, FZ, IA, alpha, FYExperimental)
 %     FYModel = pacejka(P, L, FZ, IA, alpha);
-% 
-%     % Weight residuals so each inclination angle (IA) contributes equally
-%     IAvals = unique(IA);
-%     err = [];
-%     for i = 1:numel(IAvals)
-%         idx = IA == IAvals(i);
-%         n = sum(idx);
-%         w = 1 / max(n, 1);  % equal total contribution per IA group
-%         err = [err; w * (FYModel(idx) - FYExperimental(idx))];
-%     end
+%     err = FYModel - FYExperimental;   % residuals for lsqnonlin
 % end
+
+function err = FYExperimental_all(P, L, FZ, IA, alpha, FYExperimental)
+    FYModel = pacejka(P, L, FZ, IA, alpha);
+
+    % Weight residuals so each inclination angle (IA) contributes equally
+    IAvals = unique(IA);
+    err = [];
+    for i = 1:numel(IAvals)
+        idx = IA == IAvals(i);
+        n = sum(idx);
+        w = 1 / max(n, 1);  % equal total contribution per IA group
+        err = [err; w * (FYModel(idx) - FYExperimental(idx))];
+    end
+end
