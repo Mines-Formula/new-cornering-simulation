@@ -3,7 +3,7 @@ clc, clearvars, close all;
 data0 = readtable('LC0_combined_filtered.csv');
 data2 = readtable('LC0_IA-2_combined_filtered.csv');
 data4 = readtable('LC0_IA-4_combined_filtered.csv');
-data = [data0; data2];
+data = [data0; data2; data4];
 
 % Column meanings
 IA = data{:,3};            % Inclination angle (held constant at 0)
@@ -36,7 +36,7 @@ end
 
 alphaAll = deg2rad(alphaAll);
 
-P0 = [250, 1.1894, -2.44265, 0.238051, 0.122679, 0.0264821, -0.033657, -0.28095, -1.12381, -30.6541, 1.46755, 0.0144494, -0.000595678, -0.0169505, -0.0033079, -0.121692, 0.00118353, -0.00622645, -0.0329319];
+P0 = [250, 1.1499, -2.41909, 0.36282, 0.123381, 0.00799467, -0.177665, 2.10527, -1.61848, -30.7139, 1.461, 0.0143582, -0.00233683, -0.00842228, -0.00246082, -0.0791307, -0.108178, -0.00962787, 0.0424673];
 L = ones(1,8);
 
 objFun = @(P) FYExperimental_all(P, L, FZAll, IAAll, alphaAll, FYAll);
@@ -44,6 +44,20 @@ objFun = @(P) FYExperimental_all(P, L, FZAll, IAAll, alphaAll, FYAll);
 %options = optimoptions('lsqnonlin','Display', 'iter', 'MaxFunctionEvaluations', 40000, 'TolFun', 1e-10, 'TolX', 1e-10, 'UseParallel', true);
 
 options = optimoptions('lsqnonlin', 'Display', 'iter', 'MaxFunctionEvaluations', 20000, 'TolFun', 1e-8, 'TolX', 1e-8);
+
+% Stage 1 attempt 1
+idx0 = IAAll == 0;
+objFun0 = @(P) FYExperimental_all(P, L, FZAll(idx0), IAAll(idx0), alphaAll(idx0), FYAll(idx0));
+
+lb = -Inf(1,19);
+ub = Inf(1,19);
+lb(1) = 250; ub(1) = 250;  % keep scaling fixed
+
+Pbase = lsqnonlin(objFun0, P0, lb, ub, options);
+
+disp('Base parameters (IA=0 fit):');
+disp(Pbase);
+% End stage 1 attempt
 
 lb = -Inf(1,19);
 ub = Inf(1,19);

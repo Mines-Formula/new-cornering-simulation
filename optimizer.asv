@@ -3,7 +3,7 @@ clc, clearvars, close all;
 data0 = readtable('LC0_combined_filtered.csv');
 data2 = readtable('LC0_IA-2_combined_filtered.csv');
 data4 = readtable('LC0_IA-4_combined_filtered.csv');
-data = [data4];
+data = [data0; data2; data4];
 
 % Column meanings
 IA = data{:,3};            % Inclination angle (held constant at 0)
@@ -25,6 +25,7 @@ for i = 1:numel(FZBins)
     % R20_FZ_*_filtered
     % R20_FZ_*_IA-2_filtered
     % R20_FZ_*_IA-4_filtered
+    % Also works for LC0 just match format for new tire
     idx = contains(source, [baseTag '_filtered']) | contains(source, [baseTag '_IA-2_filtered']) | contains(source, [baseTag '_IA-4_filtered']);
     
     FYAll = [FYAll; FYExperimental(idx)];
@@ -35,7 +36,7 @@ end
 
 alphaAll = deg2rad(alphaAll);
 
-P0 = [250, 1.24272, -2.43963, 0.262477, 0.495461, 0.338819, 0.193729, -0.524153, 0.121372, -30.6542, 1.41824, 0.00270398, -0.00360051, -0.00716361, -0.0017164, -0.122591, -0.0510911, 0, -0.00759647];
+P0 = [250, 1.1499, -2.41909, 0.36282, 0.123381, 0.00799467, -0.177665, 2.10527, -1.61848, -30.7139, 1.461, 0.0143582, -0.00233683, -0.00842228, -0.00246082, -0.0791307, -0.108178, -0.00962787, 0.0424673];
 L = ones(1,8);
 
 objFun = @(P) FYExperimental_all(P, L, FZAll, IAAll, alphaAll, FYAll);
@@ -44,17 +45,30 @@ objFun = @(P) FYExperimental_all(P, L, FZAll, IAAll, alphaAll, FYAll);
 
 options = optimoptions('lsqnonlin', 'Display', 'iter', 'MaxFunctionEvaluations', 20000, 'TolFun', 1e-8, 'TolX', 1e-8);
 
+% A
+idx0 = IAAll == 0;
+objFun0 = @(P) FYExperimental_all(P, L, FZAll(idx0), IAAll(idx0), alphaAll(idx0), FYAll(idx0));
+
+lb = -Inf(1,19);
+ub = Inf(1,19);
+lb(1) = 250; ub(1) = 250;  % keep scaling fixed
+
+Pbase = lsqnonlin(objFun0, P0, lb, ub, options);
+
+disp('Base parameters (IA=0 fit):');
+disp(Pbase);
+
 lb = -Inf(1,19);
 ub = Inf(1,19);
 % Fix PEY2, PEY3, PEY4, PHY2, PVY2 to zero
-fixedIdx = [2, 3, 6, 4, 10, 11, 12]; % Parameter positions to fix
-fixedZeroes = [8, 9, ]
+%fixedIdx = [2, 3, 6, 4, 10, 11, 12]; % Parameter positions to fix
+%fixedZeroes = [8, 9, 13, 17, 18]
 lb(1) = 250;
 ub(1) = 250;
-lb(fixedIdx) = P0(fixedIdx);
-ub(fixedIdx) = P0(fixedIdx);
-lb(8) = 0;
-ub(8) = 0;
+%lb(fixedIdx) = P0(fixedIdx);
+%ub(fixedIdx) = P0(fixedIdx);
+%lb(fixedZeroes) = 0;
+%ub(fixedZeroes) = 0;
 
 POptimization = lsqnonlin(objFun, P0, lb, ub, options);
 disp('Optimized Parameters:')
@@ -103,6 +117,11 @@ fprintf('[');
 fprintf('%g, ', POptimization(1:end-1));
 fprintf('%g]\n', POptimization(end));
 
+
+% function err = FYExperimental_all(P, L, FZ, IA, alpha, FYExperimental)
+%     FYModel = pacejka(P, L, FZ, IA, alpha);
+%     err = FYModel - FYExperimental;   % residuals for lsqnonlin
+% end
 
 function err = FYExperimental_all(P, L, FZ, IA, alpha, FYExperimental)
     FYModel = pacejka(P, L, FZ, IA, alpha);
