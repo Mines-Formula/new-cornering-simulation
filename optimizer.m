@@ -3,7 +3,7 @@ clc, clearvars, close all;
 data0 = readtable('LC0_combined_filtered.csv');
 data2 = readtable('LC0_IA-2_combined_filtered.csv');
 data4 = readtable('LC0_IA-4_combined_filtered.csv');
-data = [data0; data2];
+data = [data0; data2; data4;];
 
 % Column meanings
 IA = data{:,3};            % Inclination angle (held constant at 0)
@@ -36,7 +36,7 @@ end
 
 alphaAll = deg2rad(alphaAll);
 
-P0 = [250, 1.1894, -2.44265, 0.238051, 0.122679, 0.0264821, -0.033657, -0.28095, -1.12381, -30.6541, 1.46755, 0.0144494, -0.000595678, -0.0169505, -0.0033079, -0.121692, 0.00118353, -0.00622645, -0.0329319];
+P0 = [250, 1.17858, -2.45689, 0.207723, 0.00218554, 0.181269, 0.212474, -2.41388, 0.605724, -30.9683, 1.44763, 0.0143188, -0.00587066, -0.0126017, -0.00150596, -0.18861, -0.170156, 0.0185739, 0.0140275];
 L = ones(1,8);
 
 objFun = @(P) FYExperimental_all(P, L, FZAll, IAAll, alphaAll, FYAll);
