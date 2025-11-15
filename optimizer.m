@@ -3,7 +3,7 @@ clc, clearvars, close all;
 data0 = readtable('LC0_combined_filtered.csv');
 data2 = readtable('LC0_IA-2_combined_filtered.csv');
 data4 = readtable('LC0_IA-4_combined_filtered.csv');
-data = [data0; data2; data4];
+data = [data0; data4; data2];
 
 % Column meanings
 IA = data{:,3};            % Inclination angle (held constant at 0)
@@ -36,7 +36,7 @@ end
 
 alphaAll = deg2rad(alphaAll);
 
-P0 = [250, 1.1499, -2.41909, 0.36282, 0.123381, 0.00799467, -0.177665, 2.10527, -1.61848, -30.7139, 1.461, 0.0143582, -0.00233683, -0.00842228, -0.00246082, -0.0791307, -0.108178, -0.00962787, 0.0424673];
+P0 = [250, 1.26029, -2.41462, 0.272891, 0.123381, 0.307649, 0.239422, -0.0538816, 0.167142, -30.3881, 1.40528, 0.0143582, -0.000165714, 0.00115949, -0.00246082, -0.0714396, -0.0056207, 0.00719607, 0.0424673];
 L = ones(1,8);
 
 objFun = @(P) FYExperimental_all(P, L, FZAll, IAAll, alphaAll, FYAll);
@@ -76,63 +76,56 @@ disp(POptimization);
 
 % End stage 2
 
-
-
+FYPredicted = pacejka(POptimization, L, FZAll, IAAll, alphaAll);
+rmse = sqrt(mean((FYAll - FYPredicted).^2));
+fprintf('Overall RMSE: %.3f\n', rmse);
 
 IAValues = [0, 2, 4];
 colors = lines(numel(FZBins));
 
 for k = 1:numel(IAValues)
-    figure;
-    hold on;
-    grid on;
-
+    figure; hold on; grid on;
     thisIA = IAValues(k);
     idxIA = (IAAll == thisIA);
 
     for i = 1:numel(FZBins)
         idx = idxIA & (FZAll == FZBins(i));
-        scatter(rad2deg(alphaAll(idx)), FYAll(idx), 2, colors(i,:), 'filled', 'DisplayName', sprintf('Exp FZ=%d', FZBins(i)));
+        scatter(rad2deg(alphaAll(idx)), FYAll(idx), 2, colors(i,:), 'filled', ...
+            'DisplayName', sprintf('Exp FZ=%d', FZBins(i)));
 
         [alphaSort, ord] = sort(alphaAll(idx));
         FYFit = pacejka(POptimization, L, FZAll(idx), IAAll(idx), alphaSort);
-        plot(rad2deg(alphaSort), FYFit, 'Color', colors(i,:), 'LineWidth', 1.5, 'DisplayName', sprintf('Fit FZ=%d', FZBins(i)));
+        plot(rad2deg(alphaSort), FYFit, 'Color', colors(i,:), 'LineWidth', 1.5, ...
+            'DisplayName', sprintf('Fit FZ=%d', FZBins(i)));
     end
 
     title(sprintf('Pacejka Fit - IA = %d° (RMSE = %.2f)', thisIA, rmse));
     xlabel('Slip Angle [deg]');
     ylabel('Lateral Force FY');
     legend('Location', 'best');
-
 end
 
-
-xlabel('Slip Angle [deg]');
-ylabel('Lateral Force FY');
-legend('Location', 'best');
-
-fprintf('Overall RMSE: %.3f\n', rmse);
-
-fprintf('[');
-fprintf('%g, ', POptimization(1:end-1));
+fprintf('['); 
+fprintf('%g, ', POptimization(1:end-1)); 
 fprintf('%g]\n', POptimization(end));
 
 
-% function err = FYExperimental_all(P, L, FZ, IA, alpha, FYExperimental)
-%     FYModel = pacejka(P, L, FZ, IA, alpha);
-%     err = FYModel - FYExperimental;   % residuals for lsqnonlin
-% end
-
 function err = FYExperimental_all(P, L, FZ, IA, alpha, FYExperimental)
     FYModel = pacejka(P, L, FZ, IA, alpha);
-
-    % Weight residuals so each inclination angle (IA) contributes equally
     IAvals = unique(IA);
     err = [];
+
     for i = 1:numel(IAvals)
         idx = IA == IAvals(i);
-        n = sum(idx);
-        w = 1 / max(n, 1);  % equal total contribution per IA group
-        err = [err; w * (FYModel(idx) - FYExperimental(idx))];
+        FYexp = FYExperimental(idx);
+        FYmod = FYModel(idx);
+        scale = rms(FYexp);       % normalize residuals by RMS of each IA group
+
+        if IAvals(i) ~= 0
+            weight = 1.5;
+        else
+            weight = 1.0;
+        end
+        err = [err; (FYmod - FYexp) / max(scale, 1)];
     end
 end
