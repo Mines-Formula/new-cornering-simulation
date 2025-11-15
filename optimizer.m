@@ -1,9 +1,9 @@
 clc, clearvars, close all;
 
-data = readtable('LC0_combined_filtered.csv');
-%data2 = readtable('LC0_IA-2_combined_filtered.csv');
-%data4 = readtable('LC0_IA-4_combined_filtered.csv');
-%data = [data0; data2; data4];
+data0 = readtable('LC0_combined_filtered.csv');
+data2 = readtable('LC0_IA-2_combined_filtered.csv');
+data4 = readtable('LC0_IA-4_combined_filtered.csv');
+data = [data0; data2; data4];
 
 % Column meanings
 IA = data{:,3};            % Inclination angle (held constant at 0)
@@ -35,7 +35,7 @@ end
 
 alphaAll = deg2rad(alphaAll);
 
-P0 = [250, 1.4, 2.4, -0.25, 3, -0.1, -1.5, 0, 0, -30.5, 1.15, 1, 0, 0, -0.128, 0, 0, 0, 1.43];
+P0 = [250, 0.727381, 2.8, -0.529889, 3, -1.16315, -1.5, 0, 0, -26.2673, 1.1146, 1, -0.001096, 0, -0.128, -0.0744754, 0, 0, 1.43];
 L = ones(1,8);
 
 objFun = @(P) FYExperimental_all(P, L, FZAll, IAAll, alphaAll, FYAll);
@@ -47,7 +47,7 @@ options = optimoptions('lsqnonlin', 'Display', 'iter', 'MaxFunctionEvaluations',
 lb = -Inf(1,19);
 ub = Inf(1,19);
 % Fix PEY2, PEY3, PEY4, PHY2, PVY2 to zero
-fixedIdx = [7, 8, 9, 12, 14, 17]; % Parameter positions to fix
+fixedIdx = []; % Parameter positions to fix
 lb(1) = 250;
 ub(1) = 250;
 lb(fixedIdx) = P0(fixedIdx);
