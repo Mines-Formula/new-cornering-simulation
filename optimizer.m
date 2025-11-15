@@ -59,25 +59,24 @@ disp('Base parameters (IA=0 fit):');
 disp(Pbase);
 % End stage 1 attempt
 
-lb = -Inf(1,19);
-ub = Inf(1,19);
-% Fix PEY2, PEY3, PEY4, PHY2, PVY2 to zero
-%fixedIdx = [2, 3, 6, 4, 10, 11, 12]; % Parameter positions to fix
-%fixedZeroes = [8, 9, 13, 17, 18]
-lb(1) = 250;
-ub(1) = 250;
-%lb(fixedIdx) = P0(fixedIdx);
-%ub(fixedIdx) = P0(fixedIdx);
-%lb(fixedZeroes) = 0;
-%ub(fixedZeroes) = 0;
+% stage 2 attempt 1
+IAparams = [8, 9, 13, 17, 18]; % PEY3, PEY4, PHY2, PVY2, PVY3, etc
 
-POptimization = lsqnonlin(objFun, P0, lb, ub, options);
-disp('Optimized Parameters:')
-disp(POptimization)
+lb2 = Pbase; 
+ub2 = Pbase;      % lock everything
+lb2(IAparams) = -Inf;          % free IA-sensitive terms
+ub2(IAparams) = Inf;
 
-FYPredicted = pacejka(POptimization, L, FZAll, IAAll, alphaAll);
-rmse = sqrt(mean((FYAll - FYPredicted).^2));
-fprintf('Overall RMSE: %.3f\n', rmse);
+objFunIA = @(P) FYExperimental_all(P, L, FZAll, IAAll, alphaAll, FYAll);
+
+POptimization = lsqnonlin(objFunIA, Pbase, lb2, ub2, options);
+
+disp('Final optimized parameters (all IAs):');
+disp(POptimization);
+
+% End stage 2
+
+
 
 
 IAValues = [0, 2, 4];

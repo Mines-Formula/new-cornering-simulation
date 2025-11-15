@@ -45,7 +45,7 @@ objFun = @(P) FYExperimental_all(P, L, FZAll, IAAll, alphaAll, FYAll);
 
 options = optimoptions('lsqnonlin', 'Display', 'iter', 'MaxFunctionEvaluations', 20000, 'TolFun', 1e-8, 'TolX', 1e-8);
 
-% A
+% Stage 1 attempt 1
 idx0 = IAAll == 0;
 objFun0 = @(P) FYExperimental_all(P, L, FZAll(idx0), IAAll(idx0), alphaAll(idx0), FYAll(idx0));
 
@@ -57,6 +57,23 @@ Pbase = lsqnonlin(objFun0, P0, lb, ub, options);
 
 disp('Base parameters (IA=0 fit):');
 disp(Pbase);
+% End stage 1 attempt
+
+% stage 2 attempt 1
+IAparams = [8, 9, 13, 17, 18]; % PEY3, PEY4, PHY2, PVY2, PVY3, etc
+
+lb2 = Pbase; 
+ub2 = Pbase;      % lock everything
+lb2(IAparams) = -Inf;          % free IA-sensitive terms
+ub2(IAparams) = Inf;
+
+objFunIA = @(P) FYExperimental_all(P, L, FZAll, IAAll, alphaAll, FYAll);
+
+POptimization = lsqnonlin(objFunIA, Pbase, lb2, ub2, options);
+
+disp('Final optimized parameters (all IAs):');
+disp(POptimization);
+
 
 lb = -Inf(1,19);
 ub = Inf(1,19);
