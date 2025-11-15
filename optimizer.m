@@ -3,7 +3,7 @@ clc, clearvars, close all;
 data0 = readtable('LC0_combined_filtered.csv');
 data2 = readtable('LC0_IA-2_combined_filtered.csv');
 data4 = readtable('LC0_IA-4_combined_filtered.csv');
-data = [data0; data2; data4];
+data = [data2; data4];
 
 % Column meanings
 IA = data{:,3};            % Inclination angle (held constant at 0)
@@ -35,7 +35,7 @@ end
 
 alphaAll = deg2rad(alphaAll);
 
-P0 = [250, 0.727381, 2.8, -0.529889, 3, -1.16315, -1.5, 0, 0, -26.2673, 1.1146, 1, -0.001096, 0, -0.128, -0.0744754, 0, 0, 1.43];
+P0 = [250, 1.1894, -2.44265, 0.238051, 0.122679, 0.0264821, -0.033657, -0.28095, -1.12381, -30.6541, 1.46755, 0.0144494, -0.000595678, -0.0169505, -0.0033079, -0.121692, 0.00118353, -0.00622645, -0.0329319];
 L = ones(1,8);
 
 objFun = @(P) FYExperimental_all(P, L, FZAll, IAAll, alphaAll, FYAll);
@@ -47,12 +47,14 @@ options = optimoptions('lsqnonlin', 'Display', 'iter', 'MaxFunctionEvaluations',
 lb = -Inf(1,19);
 ub = Inf(1,19);
 % Fix PEY2, PEY3, PEY4, PHY2, PVY2 to zero
-fixedIdx = []; % Parameter positions to fix
+%fixedIdx = [2, 3, 6, 4, 10, 11, 12]; % Parameter positions to fix
+%fixedZeroes = [8, 9, 13, 17, 18]
 lb(1) = 250;
 ub(1) = 250;
-lb(fixedIdx) = P0(fixedIdx);
-ub(fixedIdx) = P0(fixedIdx);
-
+%lb(fixedIdx) = P0(fixedIdx);
+%ub(fixedIdx) = P0(fixedIdx);
+%lb(fixedZeroes) = 0;
+%ub(fixedZeroes) = 0;
 
 POptimization = lsqnonlin(objFun, P0, lb, ub, options);
 disp('Optimized Parameters:')
@@ -102,7 +104,16 @@ fprintf('%g, ', POptimization(1:end-1));
 fprintf('%g]\n', POptimization(end));
 
 
-function err = FYExperimental_all(P, L, FZ, IA, alpha, FYExperimental)
-    FYModel = pacejka(P, L, FZ, IA, alpha);
-    err = FYModel - FYExperimental;   % residuals for lsqnonlin
-end
+% function err = FYExperimental_all(P, L, FZ, IA, alpha, FYExperimental)
+%     FYModel = pacejka(P, L, FZ, IA, alpha);
+% 
+%     % Weight residuals so each inclination angle (IA) contributes equally
+%     IAvals = unique(IA);
+%     err = [];
+%     for i = 1:numel(IAvals)
+%         idx = IA == IAvals(i);
+%         n = sum(idx);
+%         w = 1 / max(n, 1);  % equal total contribution per IA group
+%         err = [err; w * (FYModel(idx) - FYExperimental(idx))];
+%     end
+% end
