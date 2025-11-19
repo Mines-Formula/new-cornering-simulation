@@ -1,6 +1,6 @@
 clc, clearvars, clear all
 
-dataFolder = 'data/Output/R20Round4&5';
+dataFolder = 'data/Outputs/R20Round4&5';
 
 csvFiles = dir(fullfile(dataFolder, "R20_FZ_*.csv"));
 

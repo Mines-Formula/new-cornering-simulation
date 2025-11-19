@@ -3,6 +3,7 @@ clc, clearvars, clear all
 dataFile = 'Inputs/A2356run4.mat'; % Change this to round you want
 outputFolder = 'data/Outputs/R20Round4&5'; % Change this to output you want
 
+% Change these based off of inclination angle/tire type (see Teams)
 idxRange50 = 5006:6220;
 idxRange100 = 7491:8645;
 idxRange150 = 3754:4937;
