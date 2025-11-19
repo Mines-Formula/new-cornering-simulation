@@ -1,8 +1,8 @@
 clc, clearvars, close all;
 
-data0 = readtable('LC0_combined_filtered.csv');
-data2 = readtable('LC0_IA-2_combined_filtered.csv');
-data4 = readtable('LC0_IA-4_combined_filtered.csv');
+data0 = readtable('data/LC0_combined_filtered.csv');
+data2 = readtable('data/LC0_IA-2_combined_filtered.csv');
+data4 = readtable('data/LC0_IA-4_combined_filtered.csv');
 data = [data0; data2; data4;];
 
 % Column meanings
