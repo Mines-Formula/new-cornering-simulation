@@ -40,7 +40,11 @@ subTables.FZ250 = [runTable(idxRange250a, :); runTable(idxRange250b, :)];
 
 outNames = fieldnames(subTables);
 for i = 1:numel(outNames)
+<<<<<<< HEAD
     fname = fullfile(outputFolder, sprintf("R20_FZ_%s.csv", outNames{i}(3:end))); % Change this for tire type/inclination angle
+=======
+    fname = fullfile(outputFolder, sprintf("R20_FZ_%s.csv", outNames{i}(3:end)));
+>>>>>>> main
     writetable(subTables.(outNames{i}), fname);
     disp("Saved: " + fname);
 end
