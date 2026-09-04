@@ -1,8 +1,9 @@
 clc, clearvars, clear all
 
-dataFile = '/Users/Blanchards1/Documents/Round9/A2356run4.mat';
-outputFolder = '/Users/Blanchards1/Documents/FormulaSim/Output/R20Round4&5';
+dataFile = 'Inputs/A2356run4.mat'; % Change this to round you want
+outputFolder = 'data/Outputs/R20Round4&5'; % Change this to output you want
 
+% Change these based off of inclination angle/tire type (see Teams)
 idxRange50 = 5006:6220;
 idxRange100 = 7491:8645;
 idxRange150 = 3754:4937;
@@ -39,7 +40,11 @@ subTables.FZ250 = [runTable(idxRange250a, :); runTable(idxRange250b, :)];
 
 outNames = fieldnames(subTables);
 for i = 1:numel(outNames)
+<<<<<<< HEAD
+    fname = fullfile(outputFolder, sprintf("R20_FZ_%s.csv", outNames{i}(3:end))); % Change this for tire type/inclination angle
+=======
     fname = fullfile(outputFolder, sprintf("R20_FZ_%s.csv", outNames{i}(3:end)));
+>>>>>>> main
     writetable(subTables.(outNames{i}), fname);
     disp("Saved: " + fname);
 end
