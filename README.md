@@ -1,4 +1,4 @@
-# Fy cornering/tire simulation
+# Fy cornering tire simulation
 Simulate the cornering force values of the tires based on pacejak tire coefficients. Coefficients are found via optimizing the coefficients based on tire test data using least squared optimization.
 
 Two tires are used by the club: LC0 and R20 Hoosier tires, and are simulated here.
@@ -20,7 +20,7 @@ organize.m: filters the data more by binding certain values
 
 combiner.m: combine all the filtered data to a few files for input into optimizer
 
-R20_omptimizer.m: using least squared optimization, optimize the RMSE (Root Mean Squared Error value) for a R20 tire
+R20_optimizer.m: using least squared optimization, optimize the RMSE (Root Mean Squared Error value) for a R20 tire
 
 LC0_optimizer.m: using least squared optimization, optimize the RMSE (Root Mean Squared Error value) for a LC0 tire
 
