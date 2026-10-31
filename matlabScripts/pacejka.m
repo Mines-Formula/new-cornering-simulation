@@ -1,4 +1,4 @@
-function FY = pacejka(P, L, FZ, IA, alpha);
+function FY = pacejka(P, L, FZ, IA, alpha)
 
 % inputs 19 P coefficients,
 % Estimated coefficients are as follows:

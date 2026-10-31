@@ -26,5 +26,6 @@ LC0_optimizer.m: using least squared optimization, optimize the RMSE (Root Mean 
 
 pacejka.m: function that determines the lateral force value using tire coefficients
 
-# Work to be done
-Convert to Simulink. Refer to MATLAB_practices.docx for best ways to do this.
+# Running this Code
+
+Use the cornering_simulation_self_contained.slx simulink file to run the entire simulation.
